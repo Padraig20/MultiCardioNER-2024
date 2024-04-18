@@ -1,4 +1,5 @@
 import pandas as pd
+import torch
 from torch.utils.data import Dataset
 from transformers import AutoTokenizer
 
@@ -57,20 +58,44 @@ class Custom_Dataset(Dataset):
         self.label_to_ids = label_to_ids
         self.ids_to_label = ids_to_label
         self.max_tokens = max_tokens
+        self.stack = []
 
     def __len__(self):
         return len(self.filenames)
+    
+    def prepare_input(self, tokens, labels):
 
-    def __getitem__(self, idx):
+        sen_code = self.tokenizer.encode_plus(tokens,
+            add_special_tokens=True, # adds [CLS] and [SEP]
+            max_length = self.max_tokens, # maximum tokens of a sentence
+            padding='max_length',
+            return_attention_mask=True, # generates the attention mask
+            truncation = True,
+            is_split_into_words=True
+            )
+
+        #shift labels (due to [CLS] and [SEP])
+        lbls = [-100]*self.max_tokens #-100 is ignore token
+        for i, tok in enumerate(labels):
+            if tok != None and i < self.max_tokens-1:
+                lbls[i+1]=self.label_to_ids.get(tok)
+
+        item = {key: torch.as_tensor(val) for key, val in sen_code.items()}
+        item['entity'] = torch.as_tensor(lbls)
+
+        return item
+
+    def get_tokenized_file(self, filename):
         """
-        Takes the current document with its labels and tokenizes it on-the-fly with the correct format.
+        Tokenizes a file and returns the tokens and labels.
+
+        Args:
+        filename (str): Name of the file to tokenize.
 
         Returns:
-        item (torch.tensor): Tensor which can be fed into model.
+        tokens (list): List of tokens.
+        labels (list): List of labels.
         """
-        
-        #  Get the filename
-        filename = self.filenames[idx]
         
         # get all entities in the document
         entity_documents = self.data[self.data['filename'] == filename]
@@ -98,12 +123,24 @@ class Custom_Dataset(Dataset):
                 if tok_start >= start and tok_end <= end:
                     prefix = 'B' if tok_start == start else 'I'
                     labels[idx] = f"{prefix}-{ann_type}"
-            # Convert tokens to input IDs and create attention masks
-        input_ids = self.tokenizer.convert_tokens_to_ids(tokens)
-        attention_mask = [1] * len(input_ids)
+                    
+        return tokens, labels
 
-        print("Token\tLabel")
-        for token, label in zip(tokens, labels):
-            print(f"{token}\t{label}")
+    def __getitem__(self, idx):
+        """
+        Takes the current document with its labels and tokenizes it on-the-fly with the correct format.
 
-        return token, labels
+        Returns:
+        item (torch.tensor): Tensor which can be fed into model.
+        """
+        
+        #  Get the filename
+        filename = self.filenames[idx]
+        
+        # Retrieve and tokenize the file
+        tokens, labels = self.get_tokenized_file(filename)
+          
+        # Prepare the input for BERT
+        item = self.prepare_input(tokens, labels)
+        
+        return item
