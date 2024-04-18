@@ -24,7 +24,7 @@ class Dataloader():
 
         filenames = data['filename'].unique()
         
-        tokenizer = AutoTokenizer.from_pretrained('neuralmind/bert-base-portuguese-cased')
+        tokenizer = AutoTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased')
         tokenizer.add_tokens(['B-ENFERMEDAD', 'I-ENFERMEDAD', 'O'])
 
         if not full:
