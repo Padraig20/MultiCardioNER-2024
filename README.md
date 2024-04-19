@@ -17,11 +17,15 @@ Since this model only contains Spanish words, we will use language specific BERT
 
 ## Data Loading
 
-The dataloader.py file contains two classes: DataLoader and Custom_Dataset.
+The dataloader.py file contains three classes: DataLoader, Sliding_Windows_Dataset and Cutoff_Dataset.
 
 The DataLoader class is responsible for loading and preprocessing the dataset. It reads the dataset from a TSV file, drops unnecessary columns, and gets a list of unique filenames. It then initializes a tokenizer from the HuggingFace transformers library and adds some custom tokens. The data can be split into training, validation, and test sets, or returned as a whole depending on the full parameter of the load_dataset method.
 
-The Custom_Dataset class is a subclass of PyTorch's Dataset class. It is used for loading and tokenizing sentences on-the-fly. This class is designed to be used with a PyTorch DataLoader to efficiently load and preprocess data in parallel.
+The Cutoff_Dataset class is a subclass of PyTorch's Dataset class. It is used for loading and tokenizing sentences on-the-fly. This class is designed to be used with a PyTorch DataLoader to efficiently load and preprocess data in parallel. However, sentences which do not fit into the transformer model (maximum number of tokens) are simply cutoff.
+
+In order to increase data capture, we use Sliding Window Attention with a specific stride. This ensures that all data given in one document is used as input to the model.
+
+![image](https://github.com/Padraig20/MultiCardioNER-2024/assets/111874815/68704bf5-dfa1-4ff1-97aa-6b15cfb3ff1e)
 
 Together, these classes provide a convenient way to handle data loading and preprocessing for a machine learning model.
 
