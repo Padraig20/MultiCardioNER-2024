@@ -17,6 +17,9 @@ parser.add_argument('-v', '--verbose', type=bool, default=False,
                     help='Choose whether the model should be evaluated after each epoch or only after the training.')
 parser.add_argument('-l', '--input_length', type=int, default=128,
                     help='Choose the maximum length of the model\'s input layer.')
+parser.add_argument('-w', '--window_stride', type=int, default=100,
+                    help='Choose how large the window stride for attention inside notes should be.')
+
 
 args = parser.parse_args()
 
@@ -42,7 +45,7 @@ ids_to_label = {
     2:'O'
     }
 
-dataloader = Dataloader(label_to_ids, ids_to_label, args.input_length)
+dataloader = Dataloader(label_to_ids, ids_to_label, args.input_length, args.window_stride)
 
 train, val, test = dataloader.load_dataset()
 
