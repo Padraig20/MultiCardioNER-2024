@@ -26,7 +26,7 @@ class Dataloader():
         filenames = data['filename'].unique()
         
         tokenizer = AutoTokenizer.from_pretrained('PlanTL-GOB-ES/bsc-bio-ehr-es')
-        tokenizer.add_tokens(['B-ENFERMEDAD', 'I-ENFERMEDAD', 'O'])
+        #tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 
         if not full:
             #80-20 split
@@ -34,8 +34,8 @@ class Dataloader():
             train_data = data.sample(frac=0.8, random_state=7).reset_index(drop=True)
             val_data = data.drop(train_data.index).reset_index(drop=True)
             
-            train_filenames = train_data['filename'].unique()
-            val_filenames = val_data['filename'].unique()
+            train_filenames = train_data['filename'].unique()[:20] #TODO
+            val_filenames = val_data['filename'].unique()[:5] #TODO
 
             train_dataset = Sliding_Window_Dataset(train_data, train_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
             val_dataset = Sliding_Window_Dataset(val_data, val_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
@@ -45,7 +45,7 @@ class Dataloader():
                sep="\t", header=0)
             test_data = test_data.drop(columns=['ann_id', 'label', 'text']) #remove unnecessary columns
 
-            test_filenames = test_data['filename'].unique()
+            test_filenames = test_data['filename'].unique()[:5] #TODO
         
             test_dataset = Sliding_Window_Dataset(test_data, test_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'cardioccc_dev', self.window_stride)
 
@@ -176,14 +176,15 @@ class Sliding_Window_Dataset(Dataset):
         segment_labels = labels[start_token_idx:end_token_idx]
         
         item = self.prepare_input(segment_tokens, segment_labels)
-        
-        #print(len(item['entity']), len(item['input_ids']), len(item['attention_mask']))
-        
-        # attention mask is not correct, pads should be set to 0 for no attention - 0 for [CLS] and 2 for [SEP]
+                
+        # attention mask is not correct, pads should be set to 0 for no attention - 0 for [CLS] and 2 for [SEP] in Spanish BERT
+        #item['attention_mask'] = torch.as_tensor([0 if token != 101 and token != 102 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
         item['attention_mask'] = torch.as_tensor([0 if token != 0 and token != 2 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
-        
+
         #print("-"*100)
-        #print(item)
+        #print("Mask\tEntity\tTokenIDs\tLabels\tTokens")
+        #for mask, entity, token, label, tok in zip(item['attention_mask'], item['entity'], item['input_ids'], ["-100"] + segment_labels + ["-100"], ["[CLS]"] + segment_tokens + ["[SEP]"]):
+        #    print(f"{mask}\t{entity}\t{token}\t{label}\t{tok}")
         #print("-"*100)
         
         return item
