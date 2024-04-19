@@ -11,19 +11,17 @@ import pandas as pd
 
 from tqdm import tqdm
 
-def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs, type, train_sampler=None, eval_sampler=None, verbose=True):
+def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs, type, verbose=True):
     """
     Usual training loop, including training and evaluation.
 
     Parameters:
-    model (BertNER | BioBertNER): Model to be trained.
+    model (BertNER): Model to be trained.
     train_dataset (Custom_Dataset): Dataset used for training.
     eval_dataset (Custom_Dataset): Dataset used for testing.
     optimizer (torch.optim): Optimizer used, usually SGD or Adam.
     batch_size (int): Batch size used during training.
     epochs (int): Number of epochs used for training.
-    train_sampler (SubsetRandomSampler): Sampler used during hyperparameter-tuning.
-    val_subsampler (SubsetRandomSampler): Sampler used during hyperparameter-tuning.
     verbose (bool): Whether the model should be evaluated after each epoch or not.
 
     Returns:
@@ -32,12 +30,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
         - test_res (dict): A dictionary containing the results obtained during testing.
     """
 
-    if train_sampler == None or eval_sampler == None:
-        train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = False, sampler=train_sampler)
-        eval_dataloader = DataLoader(eval_dataset, batch_size = batch_size, shuffle = False, sampler=eval_sampler)
-    else:
-        train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = False)
-        eval_dataloader = DataLoader(eval_dataset, batch_size = batch_size, shuffle = False)
+    train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = False)
+    eval_dataloader = DataLoader(eval_dataset, batch_size = batch_size, shuffle = False)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)

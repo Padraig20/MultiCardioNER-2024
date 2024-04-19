@@ -11,7 +11,7 @@ class BertNER(nn.Module):
     """
     def __init__(self, tokens_dim):
         super(BertNER,self).__init__()
-        self.pretrained = BertForTokenClassification.from_pretrained("dccuchile/bert-base-spanish-wwm-cased", num_labels = tokens_dim)
+        self.pretrained = BertForTokenClassification.from_pretrained("PlanTL-GOB-ES/bsc-bio-ehr-es", num_labels = tokens_dim)
 
     def forward(self, input_ids, attention_mask, labels = None): #labels for loss calculation
         if labels == None:

@@ -17,33 +17,40 @@ class Dataloader():
 
     def load_dataset(self, full = False):
 
-        data = pd.read_csv(f"../datasets/track1/cardioccc_dev/tsv/multicardioner_track1_cardioccc_dev.tsv", 
+        data = pd.read_csv(f"../datasets/track1/distemist_train/tsv/multicardioner_track1_distemist_train.tsv", 
                names=['filename', 'ann_id', 'label', 'start_span', 'end_span', 'text'], 
                sep="\t", header=0)
         data = data.drop(columns=['ann_id', 'label', 'text']) #remove unnecessary columns
 
         filenames = data['filename'].unique()
         
-        tokenizer = AutoTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased')
+        tokenizer = AutoTokenizer.from_pretrained('PlanTL-GOB-ES/bsc-bio-ehr-es')
         tokenizer.add_tokens(['B-ENFERMEDAD', 'I-ENFERMEDAD', 'O'])
 
         if not full:
-            #70-10-20 split
+            #80-20 split
 
-            train_data = data.sample(frac=0.7, random_state=7).reset_index(drop=True)
+            train_data = data.sample(frac=0.8, random_state=7).reset_index(drop=True)
+            val_data = data.drop(train_data.index).reset_index(drop=True)
+            
+            train_filenames = train_data['filename'].unique()
+            val_filenames = val_data['filename'].unique()
 
-            remaining_data = data.drop(train_data.index).reset_index(drop=True)
-            val_data = remaining_data.sample(frac=0.2857, random_state=7).reset_index(drop=True)
+            train_dataset = Custom_Dataset(train_data, train_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train')
+            val_dataset = Custom_Dataset(val_data, val_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train')
+            
+            test_data = pd.read_csv(f"../datasets/track1/cardioccc_dev/tsv/multicardioner_track1_cardioccc_dev.tsv", 
+               names=['filename', 'ann_id', 'label', 'start_span', 'end_span', 'text'], 
+               sep="\t", header=0)
+            test_data = test_data.drop(columns=['ann_id', 'label', 'text']) #remove unnecessary columns
 
-            test_data = remaining_data.drop(val_data.index).reset_index(drop=True)
-
-            train_dataset = Custom_Dataset(train_data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens)
-            val_dataset = Custom_Dataset(val_data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens)
-            test_dataset = Custom_Dataset(test_data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens)
+            test_filenames = test_data['filename'].unique()
+        
+            test_dataset = Custom_Dataset(test_data, test_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'cardioccc_dev')
 
             return train_dataset, val_dataset, test_dataset
         else:
-            dataset = Custom_Dataset(data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens)
+            dataset = Custom_Dataset(data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train')
             return dataset
 
 class Custom_Dataset(Dataset):
@@ -51,13 +58,14 @@ class Custom_Dataset(Dataset):
     Dataset used for loading and tokenizing sentences on-the-fly.
     """
 
-    def __init__(self, data, filenames, tokenizer, label_to_ids, ids_to_label, max_tokens):
+    def __init__(self, data, filenames, tokenizer, label_to_ids, ids_to_label, max_tokens, folder_lbl):
         self.data = data
         self.filenames = filenames
         self.tokenizer = tokenizer
         self.label_to_ids = label_to_ids
         self.ids_to_label = ids_to_label
         self.max_tokens = max_tokens
+        self.folder_lbl = folder_lbl
         self.stack = []
 
     def __len__(self):
@@ -82,7 +90,7 @@ class Custom_Dataset(Dataset):
 
         item = {key: torch.as_tensor(val) for key, val in sen_code.items()}
         item['entity'] = torch.as_tensor(lbls)
-
+        
         return item
 
     def get_tokenized_file(self, filename):
@@ -108,10 +116,12 @@ class Custom_Dataset(Dataset):
             annotations.append(('ENFERMEDAD', start_span, end_span))
         
         # Load the text
-        with open(f"../datasets/track1/cardioccc_dev/brat/{filename}.txt", 'r') as file:
+        with open(f"../datasets/track1/{self.folder_lbl}/brat/{filename}.txt", 'r') as file:
             text = file.read()
         
         tokens = self.tokenizer.tokenize(text)
+        if len(tokens) > self.max_tokens:
+            tokens = tokens[:self.max_tokens]
         token_positions = self.tokenizer(text, return_offsets_mapping=True)["offset_mapping"]
         token_positions = token_positions[1:len(token_positions)-1]
 
@@ -120,7 +130,7 @@ class Custom_Dataset(Dataset):
 
         for ann_type, start, end in annotations:
             for idx, (tok_start, tok_end) in enumerate(token_positions):
-                if tok_start >= start and tok_end <= end:
+                if tok_start >= start and tok_end <= end and idx < len(labels):
                     prefix = 'B' if tok_start == start else 'I'
                     labels[idx] = f"{prefix}-{ann_type}"
                     
