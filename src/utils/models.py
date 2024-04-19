@@ -27,7 +27,7 @@ class BertMLM(nn.Module):
     """
     Architecture for Masked Language Modeling.
     """
-    def __init__(self, tokens_dim):
+    def __init__(self):
         super(BertMLM,self).__init__()
         self.pretrained = BertForMaskedLM.from_pretrained(model_type)
 

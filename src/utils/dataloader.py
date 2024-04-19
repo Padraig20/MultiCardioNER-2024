@@ -178,12 +178,26 @@ class Sliding_Window_Dataset(Dataset):
         # attention mask is not correct, pads should be set to 0 for no attention - 0 for [CLS] and 2 for [SEP] in Spanish BERT
         #item['attention_mask'] = torch.as_tensor([0 if token != 101 and token != 102 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
         item['attention_mask'] = torch.as_tensor([0 if token != 0 and token != 2 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
+        
+        # rectify input_ids - add 1 as [PAD] and rectify 2 as [SEP] before [PAD]
+        item['input_ids'] = torch.as_tensor([1 if token != 0 and ent == -100 else token for token, ent in zip(item['input_ids'], item['entity'])])
+
+        new_ids = []
+        for i in range(0, len(item['input_ids'])):
+            if i > 0 and item['entity'][i] == -100 and item['entity'][i-1] != -100:
+                new_ids.append(2)
+            else:
+                new_ids.append(item['input_ids'][i])
+        
+        item['input_ids'] = torch.as_tensor(new_ids)
 
         #print("-"*100)
         #print("Mask\tEntity\tTokenIDs\tLabels\tTokens")
         #for mask, entity, token, label, tok in zip(item['attention_mask'], item['entity'], item['input_ids'], ["-100"] + segment_labels + ["-100"], ["[CLS]"] + segment_tokens + ["[SEP]"]):
         #    print(f"{mask}\t{entity}\t{token}\t{label}\t{tok}")
         #print("-"*100)
+        
+        #print(item)
         
         return item
     
