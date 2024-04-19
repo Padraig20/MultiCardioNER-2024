@@ -1,7 +1,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(
-        description='This class is used to train a transformer-based model on admission notes, labelled with <3 by Patrick.')
+        description='This class is used to train a transformer-based model on for the NER task.')
 
 parser.add_argument('-o', '--output', type=str, default="",
                     help='Choose where to save the model after training. Saving is optional.')
@@ -19,7 +19,6 @@ parser.add_argument('-l', '--input_length', type=int, default=128,
                     help='Choose the maximum length of the model\'s input layer.')
 parser.add_argument('-w', '--window_stride', type=int, default=100,
                     help='Choose how large the window stride for attention inside notes should be.')
-
 
 args = parser.parse_args()
 

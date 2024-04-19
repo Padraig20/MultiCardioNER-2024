@@ -201,6 +201,16 @@ class Sliding_Window_Dataset(Dataset):
         
         return item
     
+class Admission_Notes_Dataset(Dataset):
+    """ Used for MLM training on admission notes. """
+    def __init__(self, encodings):
+        self.encodings = encodings
+
+    def __len__(self):
+        return len(self.encodings['input_ids'])
+
+    def __getitem__(self, idx):
+        return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
 
 class Cutoff_Dataset(Dataset):
     """

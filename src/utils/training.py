@@ -1,14 +1,8 @@
-from utils.dataloader import Dataloader
-from utils.models import BertNER
 from utils.metric_tracking import MetricsTracking
 from utils.wandb_logger import WandBLogger
 
 import torch
-from torch.optim import SGD
 from torch.utils.data import DataLoader
-
-import numpy as np
-import pandas as pd
 
 from tqdm import tqdm
 
