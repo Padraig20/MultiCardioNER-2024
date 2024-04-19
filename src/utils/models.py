@@ -1,17 +1,20 @@
-import transformers
-from transformers import BertForTokenClassification
+from transformers import BertForTokenClassification, BertForMaskedLM, AutoTokenizer
 import torch
 import torch.nn as nn
 from torch.optim import SGD
 import torch.nn.functional as F
 
+model_type = "PlanTL-GOB-ES/bsc-bio-ehr-es"
+
 class BertNER(nn.Module):
     """
-    Architecture using neuralmind/bert-base-portuguese-cased.
+    Architecture for Named Entity Recognition.
     """
     def __init__(self, tokens_dim):
         super(BertNER,self).__init__()
-        self.pretrained = BertForTokenClassification.from_pretrained("PlanTL-GOB-ES/bsc-bio-ehr-es", num_labels = tokens_dim)
+        self.pretrained = BertForTokenClassification.from_pretrained(model_type, num_labels = tokens_dim)
+        #self.pretrained = BertForTokenClassification.from_pretrained("bert-base-uncased", num_labels = tokens_dim)
+
 
     def forward(self, input_ids, attention_mask, labels = None): #labels for loss calculation
         if labels == None:
@@ -19,3 +22,24 @@ class BertNER(nn.Module):
             return out
         out = self.pretrained(input_ids = input_ids, attention_mask = attention_mask , labels = labels)
         return out
+
+class BertMLM(nn.Module):
+    """
+    Architecture for Masked Language Modeling.
+    """
+    def __init__(self, tokens_dim):
+        super(BertMLM,self).__init__()
+        self.pretrained = BertForMaskedLM.from_pretrained(model_type)
+
+    def forward(self, input_ids, attention_mask, labels = None): #labels for loss calculation
+        if labels == None:
+            out = self.pretrained(input_ids = input_ids, attention_mask = attention_mask )
+            return out
+        out = self.pretrained(input_ids = input_ids, attention_mask = attention_mask , labels = labels)
+        return out
+
+def get_tokenizer():
+    """
+    Get tokenizer for BERT.
+    """
+    return AutoTokenizer.from_pretrained(model_type)

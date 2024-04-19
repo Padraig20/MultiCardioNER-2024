@@ -1,8 +1,7 @@
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from transformers import AutoTokenizer
-
+from utils.models import get_tokenizer
 
 class Dataloader():
     """
@@ -25,8 +24,7 @@ class Dataloader():
 
         filenames = data['filename'].unique()
         
-        tokenizer = AutoTokenizer.from_pretrained('PlanTL-GOB-ES/bsc-bio-ehr-es')
-        #tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+        tokenizer = get_tokenizer()
 
         if not full:
             #80-20 split
