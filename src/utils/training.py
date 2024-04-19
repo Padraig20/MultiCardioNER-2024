@@ -1,6 +1,7 @@
 from utils.dataloader import Dataloader
 from utils.models import BertNER
 from utils.metric_tracking import MetricsTracking
+from utils.wandb_logger import WandBLogger
 
 import torch
 from torch.optim import SGD
@@ -35,11 +36,17 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
+    
+    wandb = WandBLogger(enabled=verbose, model=model)
+    if wandb.enabled:
+        wandb.watch(model)
 
     #training
     for epoch in range(epochs):
 
         train_metrics = MetricsTracking(type)
+        
+        log_dict = dict()
 
         model.train() #train mode
 
@@ -83,6 +90,24 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
             train_results = train_metrics.return_avg_metrics(len(train_dataloader))
             eval_results = eval_metrics.return_avg_metrics(len(eval_dataloader))
+            
+            log_dict.update({
+                'train/f1_avg': train_results['avg_f1_score'],
+                'train/f1_strict': train_results['strict']['f1_score'],
+                'train/f1_ent_type': train_results['ent_type']['f1_score'],
+                'train/f1_partial': train_results['partial']['f1_score'],
+                'train/f1_exact': train_results['exact']['f1_score']
+            })
+            
+            log_dict.update({
+                'eval/f1_avg': eval_results['avg_f1_score'],
+                'eval/f1_strict': eval_results['strict']['f1_score'],
+                'eval/f1_ent_type': eval_results['ent_type']['f1_score'],
+                'eval/f1_partial': eval_results['partial']['f1_score'],
+                'eval/f1_exact': eval_results['exact']['f1_score']
+            })
+            
+            wandb.log(log_dict)
 
             print(f"Epoch {epoch+1} of {epochs} finished!")
             print(f"TRAIN\nMetrics {train_results}\n")
@@ -110,10 +135,30 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
         train_results = train_metrics.return_avg_metrics(len(train_dataloader))
         eval_results = eval_metrics.return_avg_metrics(len(eval_dataloader))
+        
+        log_dict.update({
+            'train/f1_avg': train_results['avg_f1_score'],
+            'train/f1_strict': train_results['strict']['f1_score'],
+            'train/f1_ent_type': train_results['ent_type']['f1_score'],
+            'train/f1_partial': train_results['partial']['f1_score'],
+            'train/f1_exact': train_results['exact']['f1_score']
+        })
+            
+        log_dict.update({
+            'eval/f1_avg': eval_results['avg_f1_score'],
+            'eval/f1_strict': eval_results['strict']['f1_score'],
+            'eval/f1_ent_type': eval_results['ent_type']['f1_score'],
+            'eval/f1_partial': eval_results['partial']['f1_score'],
+            'eval/f1_exact': eval_results['exact']['f1_score']
+        })
+        
+        wandb.log(log_dict)
 
         print(f"Epoch {epoch+1} of {epochs} finished!")
         print(f"TRAIN\nMetrics {train_results}\n")
         print(f"VALIDATION\nMetrics {eval_results}\n")
+    
+    wandb.finish()
 
     return train_results, eval_results
 
