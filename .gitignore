@@ -1,4 +1,8 @@
-datasets/track1
-datasets/track2
+datasets/track1/
+datasets/track2/
 
 agreements/
+
+src/wandb/
+
+src/utils/__pycache__/
