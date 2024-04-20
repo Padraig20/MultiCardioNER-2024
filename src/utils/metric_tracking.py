@@ -486,7 +486,7 @@ class MetricsTracking():
             2:'O'
             }
 
-    def update(self, predictions, labels, loss, ignore_token=-100):
+    def update(self, predictions, labels, ignore_token=-100):
         """
         Updates the current metrics. Takes into account which tokens to ignore during evaluation (e.g. [CLS]).
 
@@ -508,12 +508,9 @@ class MetricsTracking():
         self.total_predictions.append([self.ids_to_label.get(item) for item in predictions.numpy()])
         self.total_labels.append([self.ids_to_label.get(item) for item in labels.numpy()])
 
-    def return_avg_metrics(self, data_loader_size):
+    def return_avg_metrics(self):
         """
         Returns the metrics stored, but averages it to the size of the data.
-
-        Parameters:
-        data_loader_size (int): length of the data.
 
         Returns:
         metrics (dict): All the metrics calculated until now.

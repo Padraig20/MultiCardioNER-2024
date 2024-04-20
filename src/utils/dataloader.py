@@ -2,6 +2,7 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 from utils.models import get_tokenizer
+import re
 
 class Dataloader():
     """
@@ -32,7 +33,7 @@ class Dataloader():
             train_data = data.sample(frac=0.8, random_state=7).reset_index(drop=True)
             val_data = data.drop(train_data.index).reset_index(drop=True)
             
-            train_filenames = train_data['filename'].unique()[:20] #TODO
+            train_filenames = train_data['filename'].unique()[:10] #TODO
             val_filenames = val_data['filename'].unique()[:5] #TODO
 
             train_dataset = Sliding_Window_Dataset(train_data, train_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
@@ -124,6 +125,21 @@ class Sliding_Window_Dataset(Dataset):
                     labels[idx] = f"{prefix}-{ann_type}"
         
         return tokens, labels
+    
+    def tokenize_with_positions(self, text):
+        """ Unlike BERT tokenizer, this function splits the text only into words and punctuation, not subwords. """
+        pattern = r"\w+|\w+(?='s)|'s|['\".,!?;]"
+        tokens = []
+        positions = []
+
+        for match in re.finditer(pattern, text, re.UNICODE):
+            token = match.group(0)
+            tokens.append(token)
+
+            start, end = match.span()
+            positions.append((start, end))
+
+        return tokens, positions
 
     def get_tokenized_file(self, filename):
         """
@@ -151,9 +167,10 @@ class Sliding_Window_Dataset(Dataset):
         with open(f"../datasets/track1/{self.folder_lbl}/brat/{filename}.txt", 'r') as file:
             text = file.read()
         
-        tokens = self.tokenizer.tokenize(text)
-        token_positions = self.tokenizer(text, return_offsets_mapping=True)["offset_mapping"]
-        token_positions = token_positions[1:len(token_positions)-1]
+        tokens, token_positions = self.tokenize_with_positions(text)
+        
+        #print(tokens)
+        #print(token_positions)
                     
         return self.align_annotations(tokens, annotations, token_positions)
 
@@ -174,22 +191,6 @@ class Sliding_Window_Dataset(Dataset):
         segment_labels = labels[start_token_idx:end_token_idx]
         
         item = self.prepare_input(segment_tokens, segment_labels)
-                
-        # attention mask is not correct, pads should be set to 0 for no attention - 0 for [CLS] and 2 for [SEP] in Spanish BERT
-        #item['attention_mask'] = torch.as_tensor([0 if token != 101 and token != 102 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
-        item['attention_mask'] = torch.as_tensor([0 if token != 0 and token != 2 and entity == -100 else 1 for token, entity in zip(item['input_ids'], item['entity'])])
-        
-        # rectify input_ids - add 1 as [PAD] and rectify 2 as [SEP] before [PAD]
-        item['input_ids'] = torch.as_tensor([1 if token != 0 and ent == -100 else token for token, ent in zip(item['input_ids'], item['entity'])])
-
-        new_ids = []
-        for i in range(0, len(item['input_ids'])):
-            if i > 0 and item['entity'][i] == -100 and item['entity'][i-1] != -100:
-                new_ids.append(2)
-            else:
-                new_ids.append(item['input_ids'][i])
-        
-        item['input_ids'] = torch.as_tensor(new_ids)
 
         #print("-"*100)
         #print("Mask\tEntity\tTokenIDs\tLabels\tTokens")

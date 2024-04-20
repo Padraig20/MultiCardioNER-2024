@@ -40,6 +40,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
         train_metrics = MetricsTracking(type)
         
+        train_loss_arr = []
+        
         log_dict = dict()
 
         model.train() #train mode
@@ -54,10 +56,13 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
             output = model(input_id, mask, train_label)
             loss, logits = output.loss, output.logits
+            
+            train_loss_arr.append(loss.item())
+            
             predictions = logits.argmax(dim=-1)
 
             #compute metrics
-            train_metrics.update(predictions, train_label, loss.item())
+            train_metrics.update(predictions, train_label)
 
             loss.backward()
             optimizer.step()
@@ -66,6 +71,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
             model.eval() #evaluation mode
 
             eval_metrics = MetricsTracking(type)
+            
+            eval_loss_arr = []
 
             with torch.no_grad():
 
@@ -77,20 +84,23 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
                     output = model(input_id, mask, eval_label)
                     loss, logits = output.loss, output.logits
+                    
+                    eval_loss_arr.append(loss.item())
 
                     predictions = logits.argmax(dim=-1)
 
-                    eval_metrics.update(predictions, eval_label, loss.item())
+                    eval_metrics.update(predictions, eval_label)
 
-            train_results = train_metrics.return_avg_metrics(len(train_dataloader))
-            eval_results = eval_metrics.return_avg_metrics(len(eval_dataloader))
+            train_results = train_metrics.return_avg_metrics()
+            eval_results = eval_metrics.return_avg_metrics()
             
             log_dict.update({
                 'train/f1_avg': train_results['avg_f1_score'],
                 'train/f1_strict': train_results['strict']['f1_score'],
                 'train/f1_ent_type': train_results['ent_type']['f1_score'],
                 'train/f1_partial': train_results['partial']['f1_score'],
-                'train/f1_exact': train_results['exact']['f1_score']
+                'train/f1_exact': train_results['exact']['f1_score'],
+                'train/loss': sum(train_loss_arr)/len(train_loss_arr)
             })
             
             log_dict.update({
@@ -98,7 +108,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
                 'eval/f1_strict': eval_results['strict']['f1_score'],
                 'eval/f1_ent_type': eval_results['ent_type']['f1_score'],
                 'eval/f1_partial': eval_results['partial']['f1_score'],
-                'eval/f1_exact': eval_results['exact']['f1_score']
+                'eval/f1_exact': eval_results['exact']['f1_score'],
+                'eval/loss': sum(eval_loss_arr)/len(eval_loss_arr)
             })
             
             wandb.log(log_dict)
@@ -106,11 +117,15 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
             print(f"Epoch {epoch+1} of {epochs} finished!")
             print(f"TRAIN\nMetrics {train_results}\n")
             print(f"VALIDATION\nMetrics {eval_results}\n")
+            print(f"TRAIN\nLoss {sum(train_loss_arr)/len(train_loss_arr)}\n")
+            print(f"VALIDATION\nLoss {sum(eval_loss_arr)/len(eval_loss_arr)}\n")
 
     if not verbose:
         model.eval() #evaluation mode
 
         eval_metrics = MetricsTracking(type)
+        
+        eval_loss_arr = []
 
         with torch.no_grad():
 
@@ -122,20 +137,23 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
                 output = model(input_id, mask, eval_label)
                 loss, logits = output.loss, output.logits
+                
+                eval_loss_arr.append(loss.item())
 
                 predictions = logits.argmax(dim=-1)
 
-                eval_metrics.update(predictions, eval_label, loss.item())
+                eval_metrics.update(predictions, eval_label)
 
-        train_results = train_metrics.return_avg_metrics(len(train_dataloader))
-        eval_results = eval_metrics.return_avg_metrics(len(eval_dataloader))
+        train_results = train_metrics.return_avg_metrics()
+        eval_results = eval_metrics.return_avg_metrics()
         
         log_dict.update({
             'train/f1_avg': train_results['avg_f1_score'],
             'train/f1_strict': train_results['strict']['f1_score'],
             'train/f1_ent_type': train_results['ent_type']['f1_score'],
             'train/f1_partial': train_results['partial']['f1_score'],
-            'train/f1_exact': train_results['exact']['f1_score']
+            'train/f1_exact': train_results['exact']['f1_score'],
+            'train/loss': sum(train_loss_arr)/len(train_loss_arr)
         })
             
         log_dict.update({
@@ -143,7 +161,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
             'eval/f1_strict': eval_results['strict']['f1_score'],
             'eval/f1_ent_type': eval_results['ent_type']['f1_score'],
             'eval/f1_partial': eval_results['partial']['f1_score'],
-            'eval/f1_exact': eval_results['exact']['f1_score']
+            'eval/f1_exact': eval_results['exact']['f1_score'],
+            'eval/loss': sum(eval_loss_arr)/len(eval_loss_arr)
         })
         
         wandb.log(log_dict)
@@ -151,6 +170,8 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
         print(f"Epoch {epoch+1} of {epochs} finished!")
         print(f"TRAIN\nMetrics {train_results}\n")
         print(f"VALIDATION\nMetrics {eval_results}\n")
+        print(f"TRAIN\nLoss {sum(train_loss_arr)/len(train_loss_arr)}\n")
+        print(f"VALIDATION\nLoss {sum(eval_loss_arr)/len(eval_loss_arr)}\n")
     
     wandb.finish()
 
@@ -178,6 +199,8 @@ def testing(model, test_dataset, batch_size, type):
     model.eval() #evaluation mode
 
     test_metrics = MetricsTracking(type)
+    
+    test_loss_arr = []
 
     with torch.no_grad():
 
@@ -189,13 +212,16 @@ def testing(model, test_dataset, batch_size, type):
 
             output = model(input_id, mask, test_label)
             loss, logits = output.loss, output.logits
+            
+            test_loss_arr.append(loss.item())
 
             predictions = logits.argmax(dim=-1)
 
-            test_metrics.update(predictions, test_label, loss.item())
+            test_metrics.update(predictions, test_label)
 
-        test_results = test_metrics.return_avg_metrics(len(test_dataloader))
+        test_results = test_metrics.return_avg_metrics()
 
         print(f"TEST\nMetrics {test_results}\n")
+        print(f"TEST\nLoss {sum(test_loss_arr)/len(test_loss_arr)}\n")
 
     return test_results
