@@ -1,12 +1,12 @@
 from utils.metric_tracking import MetricsTracking
-from utils.wandb_logger import WandBLogger
 
 import torch
 from torch.utils.data import DataLoader
+from utils.metrics import FocalLoss
 
 from tqdm import tqdm
 
-def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs, type, verbose=True):
+def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs, type, wandb, verbose=True):
     """
     Usual training loop, including training and evaluation.
 
@@ -30,10 +30,7 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
-    
-    wandb = WandBLogger(enabled=verbose, model=model)
-    if wandb.enabled:
-        wandb.watch(model)
+    loss_function = FocalLoss()
 
     #training
     for epoch in range(epochs):
@@ -54,19 +51,19 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
 
             optimizer.zero_grad()
 
-            output = model(input_id, mask, train_label)
-            loss, logits = output.loss, output.logits
-            
-            train_loss_arr.append(loss.item())
-            
-            predictions = logits.argmax(dim=-1)
+            output = model(input_id, attention_mask=mask) # do not pass train_label here
+            logits = output.logits
 
-            #compute metrics
-            train_metrics.update(predictions, train_label)
+            loss = loss_function(logits.view(-1, logits.size(-1)), train_label.view(-1))
+
+            train_loss_arr.append(loss.item())
 
             loss.backward()
             optimizer.step()
 
+            predictions = logits.argmax(dim=-1)
+            train_metrics.update(predictions, train_label)
+            
         if verbose:
             model.eval() #evaluation mode
 
@@ -82,8 +79,10 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
                     mask = eval_data['attention_mask'].squeeze(1).to(device)
                     input_id = eval_data['input_ids'].squeeze(1).to(device)
 
-                    output = model(input_id, mask, eval_label)
-                    loss, logits = output.loss, output.logits
+                    output = model(input_id, attention_mask=mask)
+                    logits = output.logits
+
+                    loss = loss_function(logits.view(-1, logits.size(-1)), eval_label.view(-1))
                     
                     eval_loss_arr.append(loss.item())
 
@@ -135,9 +134,11 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
                 mask = eval_data['attention_mask'].squeeze(1).to(device)
                 input_id = eval_data['input_ids'].squeeze(1).to(device)
 
-                output = model(input_id, mask, eval_label)
-                loss, logits = output.loss, output.logits
-                
+                output = model(input_id, attention_mask=mask)
+                logits = output.logits
+
+                loss = loss_function(logits.view(-1, logits.size(-1)), eval_label.view(-1))
+                    
                 eval_loss_arr.append(loss.item())
 
                 predictions = logits.argmax(dim=-1)
@@ -173,8 +174,6 @@ def train_loop(model, train_dataset, eval_dataset, optimizer, batch_size, epochs
         print(f"TRAIN\nLoss {sum(train_loss_arr)/len(train_loss_arr)}\n")
         print(f"VALIDATION\nLoss {sum(eval_loss_arr)/len(eval_loss_arr)}\n")
     
-    wandb.finish()
-
     return train_results, eval_results
 
 def testing(model, test_dataset, batch_size, type):
@@ -200,6 +199,8 @@ def testing(model, test_dataset, batch_size, type):
 
     test_metrics = MetricsTracking(type)
     
+    loss_function = FocalLoss()
+    
     test_loss_arr = []
 
     with torch.no_grad():
@@ -210,11 +211,13 @@ def testing(model, test_dataset, batch_size, type):
             mask = test_data['attention_mask'].squeeze(1).to(device)
             input_id = test_data['input_ids'].squeeze(1).to(device)
 
-            output = model(input_id, mask, test_label)
-            loss, logits = output.loss, output.logits
+            output = model(input_id, attention_mask=mask)
+            logits = output.logits
+            
+            loss = loss_function(logits.view(-1, logits.size(-1)), test_label.view(-1))
             
             test_loss_arr.append(loss.item())
-
+            
             predictions = logits.argmax(dim=-1)
 
             test_metrics.update(predictions, test_label)

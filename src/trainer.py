@@ -25,6 +25,7 @@ args = parser.parse_args()
 from utils.dataloader import Dataloader
 from utils.training import train_loop, testing
 from utils.models import BertNER
+from utils.wandb_logger import WandBLogger
 
 import torch
 from torch.optim import SGD
@@ -56,6 +57,10 @@ if args.optimizer == 'SGD':
 else:
     print("Using Adam optimizer...")
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
+    
+wandb = WandBLogger(enabled=args.verbose, model=model)
+if wandb.enabled:
+    wandb.watch(model)
 
 parameters = {
     "model": model,
@@ -64,7 +69,8 @@ parameters = {
     "optimizer" : optimizer,
     "batch_size" : args.batch_size,
     "epochs" : args.epochs,
-    "type" : "ENFERMEDAD"
+    "type" : "ENFERMEDAD",
+    "wandb": wandb
 }
 
 train_loop(**parameters, verbose=args.verbose)
@@ -75,3 +81,5 @@ testing(model, test, args.batch_size, "ENFERMEDAD")
 if args.output:
     torch.save(model.state_dict(), args.output)
     print(f"Model has successfully been saved at {args.output}!")
+
+wandb.finish()

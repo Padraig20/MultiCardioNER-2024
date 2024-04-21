@@ -1,10 +1,8 @@
 from transformers import BertForTokenClassification, BertForMaskedLM, AutoTokenizer
-import torch
 import torch.nn as nn
-from torch.optim import SGD
-import torch.nn.functional as F
 
 model_type = "PlanTL-GOB-ES/bsc-bio-ehr-es"
+#model_type = "bert-base-multilingual-cased"
 
 class BertNER(nn.Module):
     """
