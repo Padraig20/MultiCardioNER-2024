@@ -1,8 +1,9 @@
 import torch
 import wandb
 from typing import Dict
+from dotenv import get_key
 
-wandb.login(key="your_wandb_key_here")
+
 class WandBLogger:
 
     def __init__(self, enabled=True, 
@@ -12,6 +13,7 @@ class WandBLogger:
         self.enabled = enabled
 
         if self.enabled:
+            wandb.login(key=get_key(key_to_get="WANDB_API_KEY", dotenv_path="../.env"))
             wandb.init(entity="technische-universitaet-wien",
                         project="multicardioner")
             if run_name is None:
