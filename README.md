@@ -45,6 +45,12 @@ After discussing this with Leonardo, the author of MedLexSp, I realized that rea
 - [roberta-es-clinical-trials-ner](https://huggingface.co/lcampillos/roberta-es-clinical-trials-ner) provides a ready-made NER model which already is good at detecting chemical entities and pharmacological substances as well as pathologic conditions - this would be suitable for both the first as well as the second track.
 - [bsc-bio-ehr-es](https://huggingface.co/PlanTL-GOB-ES/bsc-bio-ehr-es) has been trained on a large corpus of medical free text in Spanish (based on RoBERTa) and shows great understanding of this matter.
 
+## Transfer-Learning and Data Augmentation
+
+This focuses on Leonardo's fine-tuned model, which is proficient in detecting pathologic conditions as well as chemical entities and pharmacological substances in Spanish. Leonardo tested it on the dataset, but it still needs to be fine-tuned with the data provided by the organisers. The model currently recognises any disorder or sign/symptom, whereas MultiCardioNER seems to annotate only cardiovascular pathological conditions. This obtains an unsatisfactory performance. In addition, the other types of labels annotated by the model (e.g. anatomical entities or procedures) will need to be removed.
+
+To further fine-tune the model, we use data augmentation via external datasets, e.g. using clinical cases or reports for English, translate them automatically to Spanish, and then pre-annotate with a preliminary model; then, these new data or "silver standard" may be used to fine-tune the final model. Such a dataset is available on Huggingface, called [medical_mtsamples](https://huggingface.co/datasets/NickyNicky/medical_mtsamples) in English. I automatically translated it into Spanish, once again using the BRAT annotation format.
+
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
