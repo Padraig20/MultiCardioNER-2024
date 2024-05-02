@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class FocalLoss(nn.Module):
-    def __init__(self, alpha=None, gamma=2.0, reduction='mean'):
+    def __init__(self, alpha=torch.tensor([0.1, 0.9, 0.9], dtype=torch.float32), gamma=3.0, reduction='mean'):
         super(FocalLoss, self).__init__()
         self.gamma = gamma
         self.reduction = reduction
@@ -24,7 +24,8 @@ class FocalLoss(nn.Module):
 
         # Apply the alpha weighting
         if self.alpha is not None:
-            at = self.alpha.gather(0, targets)
+            at = self.alpha.gather(0, targets)  # This gathers the correct alpha per target
+            at = at.unsqueeze(1)  # Ensure it has the shape [batch_size, 1] if not already
             focal_loss *= at
         
         if self.reduction == 'mean':

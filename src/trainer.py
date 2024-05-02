@@ -57,6 +57,11 @@ if args.optimizer == 'SGD':
 else:
     print("Using Adam optimizer...")
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
+
+if torch.cuda.is_available():
+    print("Using GPU...")
+else:
+    print("Using CPU...")
     
 wandb = WandBLogger(enabled=args.verbose, model=model)
 if wandb.enabled:

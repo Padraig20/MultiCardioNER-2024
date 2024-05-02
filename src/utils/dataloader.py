@@ -17,7 +17,7 @@ class Dataloader():
         self.window_stride = window_stride
 
     def load_dataset(self, full = False):
-
+        
         data = pd.read_csv(f"../datasets/track1/distemist_train/tsv/multicardioner_track1_distemist_train.tsv", 
                names=['filename', 'ann_id', 'label', 'start_span', 'end_span', 'text'], 
                sep="\t", header=0)
@@ -33,8 +33,8 @@ class Dataloader():
             train_data = data.sample(frac=0.8, random_state=7).reset_index(drop=True)
             val_data = data.drop(train_data.index).reset_index(drop=True)
             
-            train_filenames = train_data['filename'].unique()[:10] #TODO
-            val_filenames = val_data['filename'].unique()[:5] #TODO
+            train_filenames = train_data['filename'].unique()
+            val_filenames = val_data['filename'].unique()
 
             train_dataset = Sliding_Window_Dataset(train_data, train_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
             val_dataset = Sliding_Window_Dataset(val_data, val_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
@@ -44,13 +44,13 @@ class Dataloader():
                sep="\t", header=0)
             test_data = test_data.drop(columns=['ann_id', 'label', 'text']) #remove unnecessary columns
 
-            test_filenames = test_data['filename'].unique()[:5] #TODO
+            test_filenames = test_data['filename'].unique()
         
-            test_dataset = Sliding_Window_Dataset(test_data, test_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'cardioccc_dev', self.window_stride)
+            test_dataset = Cutoff_Dataset(test_data, test_filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'cardioccc_dev')
 
             return train_dataset, val_dataset, test_dataset
         else:
-            dataset = Sliding_Window_Dataset(data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train', self.window_stride)
+            dataset = Cutoff_Dataset(data, filenames, tokenizer, self.label_to_ids, self.ids_to_label, self.max_tokens, 'distemist_train')
             return dataset
 
 class Sliding_Window_Dataset(Dataset):
@@ -76,7 +76,7 @@ class Sliding_Window_Dataset(Dataset):
         windows = []
         for idx, filename in enumerate(self.filenames):
             
-            tokens, _ = self.get_tokenized_file(filename)
+            _, tokens, _ = self.get_tokenized_file(filename)
             
             token_ids = self.tokenizer.convert_tokens_to_ids(tokens)
             total_tokens = len(token_ids)
@@ -93,15 +93,14 @@ class Sliding_Window_Dataset(Dataset):
 
         return windows
     
-    def prepare_input(self, tokens, labels):
+    def prepare_input(self, text, labels):
 
-        sen_code = self.tokenizer.encode_plus(tokens,
+        sen_code = self.tokenizer.encode_plus(text,
             add_special_tokens=True, # adds [CLS] and [SEP]
             max_length = self.max_tokens, # maximum tokens of a sentence
             padding='max_length',
             return_attention_mask=True, # generates the attention mask
-            truncation = True,
-            is_split_into_words=True
+            truncation = True
             )
 
         #shift labels (due to [CLS] and [SEP])
@@ -127,17 +126,10 @@ class Sliding_Window_Dataset(Dataset):
         return tokens, labels
     
     def tokenize_with_positions(self, text):
-        """ Unlike BERT tokenizer, this function splits the text only into words and punctuation, not subwords. """
-        pattern = r"\w+|\w+(?='s)|'s|['\".,!?;]"
-        tokens = []
-        positions = []
-
-        for match in re.finditer(pattern, text, re.UNICODE):
-            token = match.group(0)
-            tokens.append(token)
-
-            start, end = match.span()
-            positions.append((start, end))
+        
+        tokens = self.tokenizer.tokenize(text)
+        positions = self.tokenizer(text, return_offsets_mapping=True)["offset_mapping"]
+        positions = positions[1:len(positions)-1]
 
         return tokens, positions
 
@@ -166,13 +158,16 @@ class Sliding_Window_Dataset(Dataset):
         # Load the text
         with open(f"../datasets/track1/{self.folder_lbl}/brat/{filename}.txt", 'r') as file:
             text = file.read()
+            text = text.strip().replace("\n", " ")
         
         tokens, token_positions = self.tokenize_with_positions(text)
         
         #print(tokens)
         #print(token_positions)
+        
+        tokens, labels = self.align_annotations(tokens, annotations, token_positions)
                     
-        return self.align_annotations(tokens, annotations, token_positions)
+        return text, tokens, labels
 
     def __getitem__(self, idx):
         """
@@ -185,12 +180,14 @@ class Sliding_Window_Dataset(Dataset):
         # Get the filename
         file_idx, start_token_idx, end_token_idx = self.windows[idx]
         filename = self.filenames[file_idx]
-        tokens, labels = self.get_tokenized_file(filename)
+        text, tokens, labels = self.get_tokenized_file(filename)
         
-        segment_tokens = tokens[start_token_idx:end_token_idx]
+        #segment_text = text
+        
+        #segment_tokens = tokens[start_token_idx:end_token_idx]
         segment_labels = labels[start_token_idx:end_token_idx]
         
-        item = self.prepare_input(segment_tokens, segment_labels)
+        item = self.prepare_input(text, segment_labels)
 
         #print("-"*100)
         #print("Mask\tEntity\tTokenIDs\tLabels\tTokens")
@@ -213,6 +210,7 @@ class Admission_Notes_Dataset(Dataset):
     def __getitem__(self, idx):
         return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
 
+
 class Cutoff_Dataset(Dataset):
     """
     Dataset used for loading and tokenizing sentences on-the-fly. Excess data is simply cutoff.
@@ -230,16 +228,24 @@ class Cutoff_Dataset(Dataset):
     def __len__(self):
         return len(self.filenames)
     
-    def prepare_input(self, tokens, labels):
-
-        sen_code = self.tokenizer.encode_plus(tokens,
+    def prepare_input(self, sentence, labels):
+        
+        sen_code = self.tokenizer.encode_plus(sentence,
             add_special_tokens=True, # adds [CLS] and [SEP]
             max_length = self.max_tokens, # maximum tokens of a sentence
             padding='max_length',
             return_attention_mask=True, # generates the attention mask
-            truncation = True,
-            is_split_into_words=True
+            truncation = True
             )
+
+        #sen_code = self.tokenizer.encode_plus(sentence,
+        #    add_special_tokens=True, # adds [CLS] and [SEP]
+        #    max_length = self.max_tokens, # maximum tokens of a sentence
+        #    padding='max_length',
+        #    return_attention_mask=True, # generates the attention mask
+        #    truncation = True,
+        #    is_split_into_words=True
+        #    )
 
         #shift labels (due to [CLS] and [SEP])
         lbls = [-100]*self.max_tokens #-100 is ignore token
@@ -277,6 +283,7 @@ class Cutoff_Dataset(Dataset):
         # Load the text
         with open(f"../datasets/track1/{self.folder_lbl}/brat/{filename}.txt", 'r') as file:
             text = file.read()
+            text = text.strip().replace("\n", " ")
         
         tokens = self.tokenizer.tokenize(text)
         if len(tokens) > self.max_tokens:
@@ -293,7 +300,7 @@ class Cutoff_Dataset(Dataset):
                     prefix = 'B' if tok_start == start else 'I'
                     labels[idx] = f"{prefix}-{ann_type}"
                     
-        return tokens, labels
+        return text, tokens, labels
 
     def __getitem__(self, idx):
         """
@@ -307,9 +314,9 @@ class Cutoff_Dataset(Dataset):
         filename = self.filenames[idx]
         
         # Retrieve and tokenize the file
-        tokens, labels = self.get_tokenized_file(filename)
-          
+        text, tokens, labels = self.get_tokenized_file(filename)
+                        
         # Prepare the input for BERT
-        item = self.prepare_input(tokens, labels)
+        item = self.prepare_input(text, labels)
         
         return item
