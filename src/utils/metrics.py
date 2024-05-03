@@ -11,7 +11,7 @@ class FocalLoss(nn.Module):
         
     def forward(self, inputs, targets):
         
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and self.alpha is not None:
             self.alpha = self.alpha.to(inputs.device)
         
         # Calculate Log Softmax

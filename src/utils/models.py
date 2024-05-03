@@ -35,6 +35,8 @@ class BertMLM(nn.Module):
             return out
         out = self.pretrained(input_ids = input_ids, attention_mask = attention_mask , labels = labels)
         return out
+    def save_pretrained(self, path):
+        self.pretrained.save_pretrained(path)
 
 def get_tokenizer():
     """

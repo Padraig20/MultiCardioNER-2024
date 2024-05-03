@@ -3,7 +3,7 @@ import argparse
 parser = argparse.ArgumentParser(
         description='This class is used to pre-train a transformer-based model on admission notes.')
 
-parser.add_argument('-o', '--output', type=str, default="mlm_finetuned",
+parser.add_argument('-o', '--output', type=str, default=None,
                     help='Choose where to save the model after pre-training.')
 parser.add_argument('-lr', '--learning_rate', type=float, default=1e-2,
                     help='Choose the learning rate of the model.')
@@ -64,3 +64,8 @@ trainer.train()
 
 eval_results = trainer.evaluate()
 print(f"Perplexity: {math.exp(eval_results['eval_loss']):.2f}")
+
+if args.output:
+    model.save_pretrained("model_" + args.output)
+    tokenizer.save_pretrained("tok_" + args.output)
+    print(f"Model saved to {args.output}.")

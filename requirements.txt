@@ -1,5 +1,7 @@
+googletrans==4.0.0rc1
 numpy==1.26.4
 pandas==2.2.2
+python-dotenv==1.0.1
 torch==2.2.1
 tqdm==4.66.2
 transformers==4.39.2

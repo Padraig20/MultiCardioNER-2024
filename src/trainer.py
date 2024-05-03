@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-o', '--output', type=str, default="",
                     help='Choose where to save the model after training. Saving is optional.')
-parser.add_argument('-lr', '--learning_rate', type=float, default=1e-2,
+parser.add_argument('-lr', '--learning_rate', type=float, default=2e-5,
                     help='Choose the learning rate of the model.')
 parser.add_argument('-b', '--batch_size', type=int, default=16,
                     help='Choose the batch size of the model.')
