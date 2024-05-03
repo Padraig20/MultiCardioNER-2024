@@ -3,13 +3,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class FocalLoss(nn.Module):
-    def __init__(self, alpha=torch.tensor([0.1, 0.9, 0.9], dtype=torch.float32), gamma=3.0, reduction='mean'):
+    def __init__(self, alpha=None, gamma=3.0, reduction='mean'):
         super(FocalLoss, self).__init__()
         self.gamma = gamma
         self.reduction = reduction
         self.alpha = alpha
-
+        
     def forward(self, inputs, targets):
+        
+        if torch.cuda.is_available():
+            self.alpha = self.alpha.to(inputs.device)
+        
         # Calculate Log Softmax
         log_softmax = F.log_softmax(inputs, dim=1)
         

@@ -469,6 +469,7 @@ def compute_precision_recall_wrapper(results):
 
 import numpy as np
 import torch
+import time
 
 class MetricsTracking():
     """
@@ -507,6 +508,12 @@ class MetricsTracking():
 
         self.total_predictions.append([self.ids_to_label.get(item) for item in predictions.numpy()])
         self.total_labels.append([self.ids_to_label.get(item) for item in labels.numpy()])
+        
+        #for i in range(len(self.total_predictions)):
+        #    for j in range(len(self.total_predictions[i])):
+        #        print(f"{self.total_predictions[i][j]}\t{self.total_labels[i][j]}")
+        #    
+        #time.sleep(10)
 
     def return_avg_metrics(self):
         """
@@ -518,6 +525,15 @@ class MetricsTracking():
 
         total_labels = np.concatenate(self.total_labels, axis=0)
         total_predictions = np.concatenate(self.total_predictions, axis=0)
+         
+        with open("output.txt", "a") as file:
+            file.write("True\tPred\n")
+            for i in range(len(total_labels)):
+                file.write(f"{total_labels[i]}\t{total_predictions[i]}\n")
+                
+        print("True\tPred")
+        for i in range(min(500, len(total_labels))):
+            print(f"{total_labels[i]}\t{total_predictions[i]}")
 
         true_entities = collect_named_entities(total_labels)
         pred_entities = collect_named_entities(total_predictions)

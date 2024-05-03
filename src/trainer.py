@@ -22,6 +22,9 @@ parser.add_argument('-w', '--window_stride', type=int, default=100,
 
 args = parser.parse_args()
 
+if args.window_stride >= args.input_length:
+    raise ValueError("Window stride cannot be larger than or equal to input length.")
+
 from utils.dataloader import Dataloader
 from utils.training import train_loop, testing
 from utils.models import BertNER
@@ -32,6 +35,21 @@ from torch.optim import SGD
 from torch.optim import Adam
 
 #-------MAIN-------#
+
+label_to_ids = {
+    'B-ENFERMEDAD': 0,
+    'I-ENFERMEDAD': 1,
+    'O': 2
+    }
+
+ids_to_label = {
+    0:'B-ENFERMEDAD',
+    1:'I-ENFERMEDAD',
+    2:'O'
+    }
+
+#label_to_ids = {'B-ANAT': 0, 'B-CHEM': 2, 'B-ENFERMEDAD': 4, 'B-PROC': 6, 'I-ANAT': 1, 'I-CHEM': 3, 'I-ENFERMEDAD': 5, 'I-PROC': 7, 'O': 8}
+#ids_to_label = {0: 'B-ANAT', 1: 'I-ANAT', 2: 'B-CHEM', 3: 'I-CHEM', 4: 'B-ENFERMEDAD', 5: 'I-ENFERMEDAD', 6: 'B-PROC', 7: 'I-PROC', 8: 'O'}
 
 label_to_ids = {
     'B-ENFERMEDAD': 0,
