@@ -24,6 +24,7 @@ from datasets import Dataset, load_metric
 import pandas as pd
 import numpy as np
 import torch
+from utils.metrics import MetricsTracking
 
 
 model_checkpoint = "bert-base-multilingual-cased"
@@ -179,13 +180,14 @@ def compute_metrics(p):
         for prediction, label in zip(predictions, labels)
     ]
 
-    results = metric.compute(predictions=true_predictions, references=true_labels)
-    return {
-        "precision": results["overall_precision"],
-        "recall": results["overall_recall"],
-        "f1": results["overall_f1"],
-        "accuracy": results["overall_accuracy"],
-    }
+    flat_true_predictions = [p for sublist in true_predictions for p in sublist]
+
+    flat_true_labels = [l for sublist in true_labels for l in sublist]
+
+    tracker = MetricsTracking('ENFERMEDAD', tensor_input=False)
+    tracker.update(flat_true_predictions, flat_true_labels)
+
+    return tracker.return_avg_metrics()
     
 trainer = Trainer(
     model,

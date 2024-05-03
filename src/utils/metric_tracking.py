@@ -475,11 +475,12 @@ class MetricsTracking():
     """
     Class used for tracking the most prominent metrics, including accuracy, f1, precision, recall and loss.
     """
-    def __init__(self, type):
+    def __init__(self, type, tensor_input=True):
 
         self.total_predictions = []
         self.total_labels = []
         self.type = type
+        self.tensor_input = tensor_input
 
         self.ids_to_label = {
             0:'B-ENFERMEDAD',
@@ -497,17 +498,22 @@ class MetricsTracking():
         loss (float): Loss of the model.
         ignore_token (int): Specifies which token to ignore - -100 in this project's architecture.
         """
-        predictions = predictions.flatten()
-        labels = labels.flatten()
+        
+        if self.tensor_input:
+            predictions = predictions.flatten()
+            labels = labels.flatten()
 
-        predictions = predictions[labels != ignore_token]
-        labels = labels[labels != ignore_token]
+            predictions = predictions[labels != ignore_token]
+            labels = labels[labels != ignore_token]
 
-        predictions = predictions.to("cpu")
-        labels = labels.to("cpu")
+            predictions = predictions.to("cpu")
+            labels = labels.to("cpu")
 
-        self.total_predictions.append([self.ids_to_label.get(item) for item in predictions.numpy()])
-        self.total_labels.append([self.ids_to_label.get(item) for item in labels.numpy()])
+            self.total_predictions.append([self.ids_to_label.get(item) for item in predictions.numpy()])
+            self.total_labels.append([self.ids_to_label.get(item) for item in labels.numpy()])
+        else:
+            self.total_predictions = self.total_predictions + predictions
+            self.total_labels = self.total_labels + labels
         
         #for i in range(len(self.total_predictions)):
         #    for j in range(len(self.total_predictions[i])):
@@ -523,17 +529,12 @@ class MetricsTracking():
         metrics (dict): All the metrics calculated until now.
         """
 
-        total_labels = np.concatenate(self.total_labels, axis=0)
-        total_predictions = np.concatenate(self.total_predictions, axis=0)
-         
-        with open("output.txt", "a") as file:
-            file.write("True\tPred\n")
-            for i in range(len(total_labels)):
-                file.write(f"{total_labels[i]}\t{total_predictions[i]}\n")
-                
-        print("True\tPred")
-        for i in range(min(500, len(total_labels))):
-            print(f"{total_labels[i]}\t{total_predictions[i]}")
+        if self.tensor_input:
+            self.total_labels = np.concatenate(self.total_labels, axis=0)
+            self.total_predictions = np.concatenate(self.total_predictions, axis=0)
+        else:
+            total_labels = self.total_labels
+            total_predictions = self.total_predictions
 
         true_entities = collect_named_entities(total_labels)
         pred_entities = collect_named_entities(total_predictions)
