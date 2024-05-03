@@ -27,10 +27,14 @@ import torch
 
 
 model_checkpoint = "bert-base-multilingual-cased"
+tokenizer_chkp = model_checkpoint
+model_chkp = model_checkpoint
 max_tokens = args.input_length
 
 if args.input:
     model_checkpoint = args.input
+    tokenizer_chkp = 'tok_' + model_checkpoint
+    model_chkp = 'model_' + model_checkpoint
 
 label_to_ids = {
     'B-ENFERMEDAD': 0,
@@ -78,7 +82,7 @@ def load_ner_dataset(file_path):
     
     return Dataset.from_pandas(df)
 
-tokenizer = AutoTokenizer.from_pretrained('tok_' + model_checkpoint)
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_chkp)
 
 assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
 
@@ -144,7 +148,7 @@ dataset_train = prepare_dataset(dataset_train)
 dataset_test = prepare_dataset(dataset_test)
 
 
-model = AutoModelForTokenClassification.from_pretrained('model_' + model_checkpoint, num_labels=len(ids_to_label))
+model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
 
 model_name = model_checkpoint.split("/")[-1]
 args_train = TrainingArguments(
