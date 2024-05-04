@@ -1,6 +1,5 @@
-from transformers import BertForTokenClassification, BertForMaskedLM, AutoTokenizer, AutoConfig, AutoModelForTokenClassification
+from transformers import AutoTokenizer, AutoModelForTokenClassification, AutoModelForMaskedLM
 import torch.nn as nn
-import torch
 
 #model_type = "PlanTL-GOB-ES/bsc-bio-ehr-es"
 model_type = "bert-base-multilingual-cased"
@@ -12,7 +11,7 @@ class BertNER(nn.Module):
     """
     def __init__(self, tokens_dim):
         super(BertNER,self).__init__()
-        self.pretrained = BertForTokenClassification.from_pretrained(model_type, num_labels = tokens_dim)
+        self.pretrained = AutoModelForTokenClassification.from_pretrained(model_type, num_labels = tokens_dim)
 
     def forward(self, input_ids, attention_mask, labels = None): #labels for loss calculation
         if labels == None:
@@ -27,7 +26,7 @@ class BertMLM(nn.Module):
     """
     def __init__(self):
         super(BertMLM,self).__init__()
-        self.pretrained = BertForMaskedLM.from_pretrained(model_type)
+        self.pretrained = AutoModelForMaskedLM.from_pretrained(model_type)
 
     def forward(self, input_ids, attention_mask, labels = None): #labels for loss calculation
         if labels == None:
