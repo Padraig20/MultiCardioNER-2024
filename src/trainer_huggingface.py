@@ -20,8 +20,8 @@ parser.add_argument('-s', '--stride', type=int, default=None,
 
 args = parser.parse_args()
 
-if args.stride - args.input_length < 0:
-    raise ValueError("Stride must be greater than the input length.")
+if args.stride is not None and args.stride > 0:
+    raise ValueError("Stride must be greater than zero.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
