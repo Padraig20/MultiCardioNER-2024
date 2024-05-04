@@ -522,8 +522,8 @@ class MetricsTracking():
         """
 
         if self.tensor_input:
-            self.total_labels = np.concatenate(self.total_labels, axis=0)
-            self.total_predictions = np.concatenate(self.total_predictions, axis=0)
+            total_labels = np.concatenate(self.total_labels, axis=0)
+            total_predictions = np.concatenate(self.total_predictions, axis=0)
         else:
             total_labels = self.total_labels
             total_predictions = self.total_predictions
