@@ -20,11 +20,11 @@ args = parser.parse_args()
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
-from datasets import Dataset, load_metric
+from datasets import Dataset
 import pandas as pd
 import numpy as np
 import torch
-from utils.metrics import MetricsTracking
+from utils.metric_tracking import MetricsTracking
 
 
 model_checkpoint = "bert-base-multilingual-cased"
@@ -163,8 +163,6 @@ args_train = TrainingArguments(
 )
 
 data_collator = DataCollatorForTokenClassification(tokenizer)
-
-metric = load_metric("seqeval")
 
 def compute_metrics(p):
     predictions, labels = p

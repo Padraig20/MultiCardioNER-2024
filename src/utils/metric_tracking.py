@@ -468,8 +468,6 @@ def compute_precision_recall_wrapper(results):
 #-------------------------------------------------------------------------------------------------------
 
 import numpy as np
-import torch
-import time
 
 class MetricsTracking():
     """
@@ -514,13 +512,7 @@ class MetricsTracking():
         else:
             self.total_predictions = self.total_predictions + predictions
             self.total_labels = self.total_labels + labels
-        
-        #for i in range(len(self.total_predictions)):
-        #    for j in range(len(self.total_predictions[i])):
-        #        print(f"{self.total_predictions[i][j]}\t{self.total_labels[i][j]}")
-        #    
-        #time.sleep(10)
-
+            
     def return_avg_metrics(self):
         """
         Returns the metrics stored, but averages it to the size of the data.
