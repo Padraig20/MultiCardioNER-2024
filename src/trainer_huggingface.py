@@ -15,16 +15,19 @@ parser.add_argument('-e', '--epochs', type=int, default=10,
                     help='Choose the epochs of the model.')
 parser.add_argument('-l', '--input_length', type=int, default=512,
                     help='Choose the maximum length of the model\'s input layer.')
+parser.add_argument('-s', '--stride', type=int, default=None,
+                    help='Choose the stride for the sliding window dataset.')
 
 args = parser.parse_args()
 
+if args.stride - args.input_length < 0:
+    raise ValueError("Stride must be greater than the input length.")
+
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
-from datasets import Dataset
-import pandas as pd
 import numpy as np
-import torch
 from utils.metric_tracking import MetricsTracking
+from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDataset
 
 
 model_checkpoint = "bert-base-multilingual-cased"
@@ -51,103 +54,17 @@ ids_to_label = {
 
 label_list = list(ids_to_label.values())
 
-def load_ner_dataset(file_path):
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
-    
-    tokens = []
-    labels = []
-    current_tokens = []
-    current_labels = []
-    
-    for line in lines:
-        line = line.strip()
-        if line == "":
-            if current_tokens and current_labels:
-                tokens.append(current_tokens)
-                labels.append(current_labels)
-                current_tokens = []
-                current_labels = []
-        else:
-            parts = line.split()
-            token = parts[0]
-            label = parts[1]
-            current_tokens.append(token)
-            current_labels.append(label)
-    
-    if current_tokens and current_labels:
-        tokens.append(current_tokens)
-        labels.append(current_labels)
-    
-    df = pd.DataFrame({"tokens": tokens, "labels": labels})
-    
-    return Dataset.from_pandas(df)
-
 tokenizer = AutoTokenizer.from_pretrained(tokenizer_chkp)
 
 assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
 
-def tokenize_and_preserve_labels(sentence, text_labels, max_tokens):
-    tokenized_sentence = []
-    labels = []
+if args.stride:
+    dataloader = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
+else:
+    dataloader = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
-    for word, label in zip(sentence, text_labels):
-        tokenized_word = tokenizer.tokenize(word)
-        n_subwords = len(tokenized_word)
-
-        if(len(tokenized_sentence)>=max_tokens): #truncate
-            return tokenized_sentence, labels
-
-        tokenized_sentence.extend(tokenized_word)
-
-        if label.startswith("B-"):
-            labels.extend([label])
-            labels.extend([ids_to_label.get(label_to_ids.get(label)+1)]*(n_subwords-1))
-        else:
-            labels.extend([label] * n_subwords)
-
-    return tokenized_sentence, labels
-
-def tokenize_and_align_labels(examples):
-    
-    t_sen, t_labl = tokenize_and_preserve_labels(examples['tokens'], examples['labels'], max_tokens)
-
-    sen_code = tokenizer.encode_plus(examples['tokens'],
-        add_special_tokens=True, # adds [CLS] and [SEP]
-        max_length = max_tokens, # maximum tokens of a sentence
-        padding='max_length',
-        is_split_into_words=True,
-        return_attention_mask=True, # generates the attention mask
-        truncation = True
-        )
-
-    #shift labels (due to [CLS] and [SEP])
-    labels = [-100]*max_tokens #-100 is ignore token
-    for i, tok in enumerate(t_labl):
-        if tok != None and i < max_tokens-1:
-            labels[i+1]=label_to_ids.get(tok)
-
-    item = {key: torch.as_tensor(val) for key, val in sen_code.items()}
-        
-    item['entity'] = torch.as_tensor(labels)
-    
-    return item
-
-def prepare_dataset(dataset):
-  tokenized_datasets = dataset.map(tokenize_and_align_labels)
-
-  tokenized_datasets = tokenized_datasets.remove_columns('tokens')
-  tokenized_datasets = tokenized_datasets.remove_columns('labels')
-  tokenized_datasets = tokenized_datasets.rename_column("entity", "labels")
-
-  return tokenized_datasets
-
-dataset_train = load_ner_dataset("../datasets/track1_converted/train/all_train.conll")
-dataset_test = load_ner_dataset("../datasets/track1_converted/dev/all_dev.conll")
-
-dataset_train = prepare_dataset(dataset_train)
-dataset_test = prepare_dataset(dataset_test)
-
+dataset_train = dataloader.get_dataset("../datasets/track1_converted/train/all_train.conll")
+dataset_test = dataloader.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
 
