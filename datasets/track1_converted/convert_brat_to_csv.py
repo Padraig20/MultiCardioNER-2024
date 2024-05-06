@@ -66,7 +66,7 @@ def convert_brat_to_csv(text_file, ann_file, output_csv):
     print(tokens)
     #print(char_tags)
     #print(token_tags)
-    #write_to_csv(output_csv, text, token_tags)
+    write_to_csv(output_csv, text, token_tags)
 
 
 def read_files_from_directory(directory):
@@ -77,7 +77,7 @@ def read_files_from_directory(directory):
             files.append(str(file_path)[:len(file_path)-4])
     return files
 
-directory = '../track1/distemist_train/brat/'
+directory = '../additional/brat/'
 files = read_files_from_directory(directory)
 unique_files = set(files)
 
@@ -87,4 +87,3 @@ for file in files:
     output_csv = "all_train.csv"
     print(file)
     convert_brat_to_csv(text_file, ann_file, output_csv)
-    break

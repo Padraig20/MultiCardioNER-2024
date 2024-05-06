@@ -17,10 +17,12 @@ parser.add_argument('-l', '--input_length', type=int, default=512,
                     help='Choose the maximum length of the model\'s input layer.')
 parser.add_argument('-s', '--stride', type=int, default=None,
                     help='Choose the stride for the sliding window dataset.')
+parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
+                    help='Choose whether to use data augmentation or not.')
 
 args = parser.parse_args()
 
-if args.stride is not None and args.stride > 0:
+if args.stride is not None and args.stride < 0:
     raise ValueError("Stride must be greater than zero.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
@@ -28,9 +30,10 @@ import transformers
 import numpy as np
 from utils.metric_tracking import MetricsTracking
 from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDataset
+from datasets import concatenate_datasets
 
 
-model_checkpoint = "bert-base-multilingual-cased"
+model_checkpoint = "PlanTL-GOB-ES/bsc-bio-ehr-es"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -65,6 +68,10 @@ else:
 
 dataset_train = dataloader.get_dataset("../datasets/track1_converted/train/all_train.conll")
 dataset_test = dataloader.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
+
+if args.data_augmentation:
+    dataset_augmented = dataloader.get_dataset("../datasets/additional/all_train.conll")
+    dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
 
