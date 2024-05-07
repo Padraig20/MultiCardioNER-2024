@@ -6,3 +6,7 @@ agreements/
 src/wandb/
 
 src/utils/__pycache__/
+
+.env
+
+datasets/track.zip
