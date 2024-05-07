@@ -18,7 +18,7 @@ parser.add_argument('-l', '--input_length', type=int, default=512,
 parser.add_argument('-s', '--stride', type=int, default=None,
                     help='Choose the stride for the sliding window dataset.')
 parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
-                    help='Choose whether to use data augmentation or not.')
+                    help='Choose whether to use data augmentation or not. This adds the mtsamples dataset to the training data.')
 
 args = parser.parse_args()
 
