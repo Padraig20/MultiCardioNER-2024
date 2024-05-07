@@ -19,11 +19,16 @@ parser.add_argument('-s', '--stride', type=int, default=None,
                     help='Choose the stride for the sliding window dataset.')
 parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
                     help='Choose whether to use data augmentation or not. This adds the mtsamples dataset to the training data.')
+parser.add_argument('-ctn', '--clinical_trials_ner', type=str, default=None,
+                    help='Choose this option if you want to finetune your model onto the clinical trials dataset. Use FARMACO or ENFERMEDAD.')
 
 args = parser.parse_args()
 
 if args.stride is not None and args.stride < 0:
     raise ValueError("Stride must be greater than zero.")
+
+if args.clinical_trials_ner and args.clinical_trials_ner not in ['ENFERMEDAD']: # TODO ['FARMACO', 'ENFERMEDAD']
+    raise ValueError("Clinical Trials NER must be either FARMACO or ENFERMEDAD.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
@@ -33,7 +38,7 @@ from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDatas
 from datasets import concatenate_datasets
 
 
-model_checkpoint = "lcampillos/roberta-es-clinical-trials-ner"
+model_checkpoint = "microsoft/mdeberta-v3-base"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -94,12 +99,17 @@ else:
     
 dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
+
 dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train/all_train.conll")
 dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
     dataset_augmented = dataloader_train.get_dataset("../datasets/mtsamples/all_train.conll")
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
+
+if args.clinical_trials_ner:
+    dataset_train = dataloader_train.get_dataset("../datasets/ct-ebm-sp/" + args.clinical_trials_ner + "/train/train.conll")
+    dataset_test = dataloader_test.get_dataset("../datasets/ct-ebm-sp/" + args.clinical_trials_ner + "/dev/dev.conll")
 
 model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
 
