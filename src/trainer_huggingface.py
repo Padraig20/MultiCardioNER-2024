@@ -88,15 +88,17 @@ tokenizer = AutoTokenizer.from_pretrained(tokenizer_chkp)
 assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
 
 if args.stride:
-    dataloader = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
+    dataloader_train = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
 else:
-    dataloader = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
+    dataloader_train = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
+    
+dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
-dataset_train = dataloader.get_dataset("../datasets/track1_converted/train/all_train.conll")
-dataset_test = dataloader.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
+dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train/all_train.conll")
+dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
-    dataset_augmented = dataloader.get_dataset("../datasets/additional/all_train.conll")
+    dataset_augmented = dataloader_train.get_dataset("../datasets/additional/all_train.conll")
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
