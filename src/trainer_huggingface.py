@@ -33,7 +33,7 @@ from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDatas
 from datasets import concatenate_datasets
 
 
-model_checkpoint = "PlanTL-GOB-ES/bsc-bio-ehr-es"
+model_checkpoint = "lcampillos/roberta-es-clinical-trials-ner"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -54,6 +54,32 @@ ids_to_label = {
     1:'I-ENFERMEDAD',
     2:'O'
 }
+
+if model_checkpoint == "lcampillos/roberta-es-clinical-trials-ner":
+    
+    label_to_ids = {
+        'B-ANAT': 0,
+        'B-CHEM': 2,
+        'B-ENFERMEDAD': 4, #DISO
+        'B-PROC': 6,
+        'I-ANAT': 1,
+        'I-CHEM': 3,
+        'I-ENFERMEDAD': 5, #DISO
+        'I-PROC': 7,
+        'O': 8
+    }
+
+    ids_to_label = {
+        0:'O',
+        1:'O',
+        2:'O',
+        3:'O',
+        4:'B-ENFERMEDAD', #DISO
+        5:'I-ENFERMEDAD', #DISO
+        6:'O',
+        7:'O',
+        8:'O'
+    }
 
 label_list = list(ids_to_label.values())
 
