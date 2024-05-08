@@ -2,8 +2,9 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification, AutoMod
 import torch.nn as nn
 
 #model_type = "PlanTL-GOB-ES/bsc-bio-ehr-es"
-model_type = "bert-base-multilingual-cased"
+#model_type = "bert-base-multilingual-cased"
 #model_type = "bert-base-cased"
+model_type = "microsoft/mdeberta-v3-base"
 
 class BertNER(nn.Module):
     """
