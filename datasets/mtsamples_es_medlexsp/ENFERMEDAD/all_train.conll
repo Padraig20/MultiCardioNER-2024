@@ -244,7 +244,7 @@ sin	O
 incidentes	O
 de	O
 100cc	O
-Optiray	B-FARMACO
+Optiray	O
 350	O
 contraste	O
 intravenoso	O
@@ -1476,7 +1476,7 @@ bilateral	O
 Anestesia	O
 1	O
 de	O
-lidocaína	B-FARMACO
+lidocaína	O
 y	O
 sedación	O
 IV	O
@@ -2729,7 +2729,7 @@ la	O
 anestesia	O
 local	O
 con	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 2	O
 ,	O
@@ -3031,7 +3031,7 @@ Ella	O
 está	O
 en	O
 la	O
-amiodarona	B-FARMACO
+amiodarona	O
 IV	O
 ,	O
 el	O
@@ -4751,7 +4751,7 @@ del	O
 89	O
 con	O
 el	O
-broncodilatador	B-FARMACO
+broncodilatador	O
 .	O
 SVC	O
 fue	O
@@ -7000,7 +7000,7 @@ Después	O
 del	O
 uso	O
 de	O
-broncodilatadores	B-FARMACO
+broncodilatadores	O
 ,	O
 no	O
 hay	O
@@ -13030,8 +13030,8 @@ tracto	O
 estaba	O
 enjuagado	O
 con	O
-solución	B-FARMACO
-salina	I-FARMACO
+solución	O
+salina	O
 .	O
 Se	O
 unió	O
@@ -13102,7 +13102,7 @@ prueba	O
 de	O
 tensión	O
 de	O
-dobutamina	B-FARMACO
+dobutamina	O
 ,	O
 indicación	O
 Dolor	O
@@ -15062,7 +15062,7 @@ esto	O
 .	O
 Tomó	O
 un	O
-analgésico	B-FARMACO
+analgésico	O
 desconocido	O
 ,	O
 luego	O
@@ -15782,7 +15782,7 @@ meses	O
 después	O
 .	O
 
-Medicamentos	B-FARMACO
+Medicamentos	O
 plavix	O
 ,	O
 atenolol	O
@@ -16397,9 +16397,9 @@ aproximadamente	O
 4	O
 ml	O
 de	O
-material	B-FARMACO
-de	I-FARMACO
-contraste	I-FARMACO
+material	O
+de	O
+contraste	O
 Visipaco	O
 320	O
 a	O
@@ -26818,7 +26818,7 @@ proceder	O
 El	O
 paciente	O
 recibió	O
-lidocaína	B-FARMACO
+lidocaína	O
 tópica	O
 por	O
 nebulización	O
@@ -28281,7 +28281,7 @@ aproximadamente	O
 10	O
 cc	O
 de	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 1	O
 ,	O
@@ -31005,7 +31005,7 @@ cinta	O
 de	O
 correr	O
 de	O
-cardiolite	B-FARMACO
+cardiolite	O
 ,	O
 datos	O
 clínicos	O
@@ -33435,7 +33435,7 @@ Después	O
 del	O
 uso	O
 de	O
-broncodilatadores	B-FARMACO
+broncodilatadores	O
 ,	O
 hay	O
 alguna	O
@@ -36842,7 +36842,7 @@ recibió	O
 75	O
 ml	O
 de	O
-Ultravist	B-FARMACO
+Ultravist	O
 370	O
 a	O
 una	O
@@ -37895,7 +37895,7 @@ de	O
 la	O
 terapia	O
 de	O
-broncodilatadores	B-FARMACO
+broncodilatadores	O
 .	O
 Los	O
 volúmenes	O
@@ -44100,7 +44100,7 @@ diagnóstica	O
 ,	O
 Anestesia	O
 ,	O
-lidocaína	B-FARMACO
+lidocaína	O
 simple	O
 al	O
 2	O
@@ -44163,7 +44163,7 @@ a	O
 la	O
 clínica	O
 de	O
-medicina	B-FARMACO
+medicina	O
 pulmonar	O
 para	O
 la	O
@@ -45449,7 +45449,7 @@ usó	O
 una	O
 solución	O
 de	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 1	O
 para	O
@@ -46338,8 +46338,8 @@ catéter	O
 estaba	O
 enjuagado	O
 con	O
-solución	B-FARMACO
-salina	I-FARMACO
+solución	O
+salina	O
 heparinizada	O
 diluida	O
 .	O
@@ -46796,7 +46796,7 @@ en	O
 reposo	O
 mioview	O
 y	O
-adenosina	B-FARMACO
+adenosina	O
 Mioview	O
 Spect	O
 .	O
@@ -47789,7 +47789,7 @@ quirúrgica	O
 estándar	O
 .	O
 La	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 1	O
 se	O
@@ -52163,7 +52163,7 @@ derecha	O
 se	O
 anestesió	O
 con	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 2	O
 y	O
@@ -53135,7 +53135,7 @@ Thoracis	O
 .	O
 Necesidad	O
 de	O
-antibióticos	B-FARMACO
+antibióticos	O
 intravenosos	O
 .	O
 ,	O
@@ -55774,7 +55774,7 @@ usó	O
 una	O
 solución	O
 de	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 1	O
 para	O
@@ -56637,7 +56637,7 @@ a	O
 la	O
 clínica	O
 de	O
-medicina	B-FARMACO
+medicina	O
 pulmonar	O
 para	O
 la	O
@@ -72314,7 +72314,7 @@ incluye	O
 4	O
 cc	O
 de	O
-lidocaína	B-FARMACO
+lidocaína	O
 al	O
 1	O
 localmente	O
@@ -74769,7 +74769,7 @@ cardiopulmonario	O
 total	O
 ,	O
 el	O
-potasio	B-FARMACO
+potasio	O
 coronario	O
 .	O
 cardioplegia	O
@@ -84000,7 +84000,7 @@ dieron	O
 profilaxis	O
 antibiótica	O
 con	O
-cefazolina	B-FARMACO
+cefazolina	O
 y	O
 gentamicina	O
 .	O
@@ -89683,7 +89683,7 @@ Ecocardiograma	O
 de	O
 estrés	O
 de	O
-dobutamina	B-FARMACO
+dobutamina	O
 ,	O
 razón	O
 para	O
@@ -91311,7 +91311,7 @@ tensión	O
 de	O
 miovisión	O
 de	O
-dobutamina	B-FARMACO
+dobutamina	O
 y	O
 exploración	O
 cerrada	O
@@ -95914,7 +95914,7 @@ se	O
 aseguró	O
 con	O
 la	O
-prolene	B-FARMACO
+prolene	O
 2	O
 0	O
 .	O
@@ -98863,7 +98863,7 @@ fascia	O
 se	O
 cerró	O
 con	O
-Vicryl	B-FARMACO
+Vicryl	O
 1	O
 seguido	O
 de	O

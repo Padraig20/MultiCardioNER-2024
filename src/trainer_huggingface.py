@@ -38,7 +38,7 @@ from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDatas
 from datasets import concatenate_datasets
 
 
-model_checkpoint = "microsoft/mdeberta-v3-base"
+model_checkpoint = "bert-base-multilingual-cased"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -104,7 +104,7 @@ dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train
 dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
-    dataset_augmented = dataloader_train.get_dataset("../datasets/mtsamples_es_medlexsp/all_train.conll")
+    dataset_augmented = dataloader_train.get_dataset("../datasets/mtsamples_es_medlexsp/ENFERMEDAD/all_train.conll") #TODO: Add FARMACO
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 if args.clinical_trials_ner:
