@@ -46,7 +46,7 @@ from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDatas
 from datasets import concatenate_datasets
 
 
-model_checkpoint = "bert-base-multilingual-cased"
+model_checkpoint = "microsoft/mdeberta-v3-base"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -145,6 +145,8 @@ if args.clinical_trials_ner:
     dataset_test = dataloader_test.get_dataset("../datasets/ct-ebm-sp/" + args.clinical_trials_ner + "/dev/dev.conll")
 
 model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
+
+print(model.config)
 
 model_name = model_checkpoint.split("/")[-1]
 args_train = TrainingArguments(
