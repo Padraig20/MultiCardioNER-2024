@@ -149,7 +149,6 @@ model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=l
 model_name = model_checkpoint.split("/")[-1]
 args_train = TrainingArguments(
     f"{model_name}-finetuned-multicardioner",
-    evaluation_strategy = "epoch",
     learning_rate=args.learning_rate,
     per_device_train_batch_size=args.batch_size,
     per_device_eval_batch_size=args.batch_size,
@@ -177,7 +176,7 @@ def compute_metrics(p):
 
     flat_true_labels = [l for sublist in true_labels for l in sublist]
 
-    tracker = MetricsTracking('ENFERMEDAD', tensor_input=False)
+    tracker = MetricsTracking(args.type, tensor_input=False)
     tracker.update(flat_true_predictions, flat_true_labels)
 
     return tracker.return_avg_metrics()
