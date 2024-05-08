@@ -137,7 +137,7 @@ if not args.clinical_trials_ner:
     dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
-    dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{args.type}/all_train.conll") #TODO: Add FARMACO
+    dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{args.type}/all_train.conll")
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 if args.clinical_trials_ner:
