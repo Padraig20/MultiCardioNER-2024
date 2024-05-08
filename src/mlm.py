@@ -15,6 +15,8 @@ parser.add_argument('-wd', '--weight_decay', type=float, default=0.01,
                     help='Choose the weight decay of the model during training.')
 parser.add_argument('-mlm', '--mlm_probability', type=float, default=0.15,
                     help='Choose the probability of masking tokens during training.')
+parser.add_argument('-b', '--batch_size', type=int, default=4,
+                    help='Choose the batch size of the model.')
 
 args = parser.parse_args()
 
@@ -49,7 +51,9 @@ training_args = TrainingArguments(
     evaluation_strategy="epoch",
     learning_rate=args.learning_rate,
     num_train_epochs=args.epochs,
-    weight_decay=args.weight_decay
+    weight_decay=args.weight_decay,
+    per_device_train_batch_size=args.batch_size,
+    per_device_eval_batch_size=args.batch_size
 )
 
 trainer = Trainer(
