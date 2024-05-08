@@ -1,0 +1,10 @@
+T1	ENFERMEDAD 79 100	fibrilación auricular
+T2	ENFERMEDAD 217 242	accidente cerebrovascular
+T3	ENFERMEDAD 362 368	trombo
+T4	ENFERMEDAD 403 409	trombo
+T5	FARMACO 576 585	fentanilo
+T6	ENFERMEDAD 791 796	shock
+T8	ENFERMEDAD 899 918	taquicardia sinusal
+T9	ENFERMEDAD 949 963	complicaciones
+T11	ENFERMEDAD 1157 1178	fibrilación auricular
+T12	ENFERMEDAD 1183 1197	complicaciones

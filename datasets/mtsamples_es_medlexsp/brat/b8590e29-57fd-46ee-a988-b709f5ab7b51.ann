@@ -1,0 +1,15 @@
+T1	ENFERMEDAD 32 55	derrame pleural derecho
+T2	ENFERMEDAD 101 124	derrame pleural derecho
+T3	ENFERMEDAD 293 301	cirrosis
+T4	ENFERMEDAD 325 340	derrame pleural
+T5	FARMACO 560 565	talco
+T6	ENFERMEDAD 578 593	derrame pleural
+T7	ENFERMEDAD 628 645	Pérdida de sangre
+T8	FARMACO 983 990	morfina
+T9	FARMACO 1166 1174	solución
+T10	FARMACO 1188 1210	solución salina normal
+T11	FARMACO 1231 1236	talco
+T12	FARMACO 1248 1257	lidocaína
+T13	ENFERMEDAD 1351 1361	neumotórax
+T16	FARMACO 1634 1642	Dilaudid
+T17	ENFERMEDAD 1792 1797	dolor

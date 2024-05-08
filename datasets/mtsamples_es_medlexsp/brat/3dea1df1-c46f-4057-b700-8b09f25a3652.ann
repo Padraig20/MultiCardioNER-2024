@@ -1,0 +1,20 @@
+T1	ENFERMEDAD 27 47	episodios sincopales
+T2	ENFERMEDAD 52 58	lesión
+T3	ENFERMEDAD 172 180	arritmia
+T4	FARMACO 207 219	procainamida
+T5	ENFERMEDAD 237 256	síndrome de Brugada
+T6	ENFERMEDAD 346 354	arritmia
+T7	FARMACO 374 386	procainamida
+T8	ENFERMEDAD 395 414	síndrome de Brugada
+T9	FARMACO 569 578	fentanilo
+T10	FARMACO 668 677	lidocaína
+T16	ENFERMEDAD 1512 1523	disociación
+T18	FARMACO 1659 1672	isoproterenol
+T20	FARMACO 2237 2249	procainamida
+T23	FARMACO 2346 2358	procainamida
+T24	ENFERMEDAD 2464 2474	disfunción
+T25	ENFERMEDAD 2494 2501	bloqueo
+T26	ENFERMEDAD 2522 2550	taquicardia supraventricular
+T27	ENFERMEDAD 2563 2586	taquicardia ventricular
+T28	ENFERMEDAD 2611 2630	síndrome de Brugada
+T31	ENFERMEDAD 2776 2796	episodios sincopales

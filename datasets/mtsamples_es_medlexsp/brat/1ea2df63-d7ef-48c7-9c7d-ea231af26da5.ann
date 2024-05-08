@@ -1,0 +1,41 @@
+T1	ENFERMEDAD 27 44	Paro respiratorio
+T2	ENFERMEDAD 49 88	Enfermedad pulmonar obstructiva crónica
+T3	ENFERMEDAD 111 145	Enfermedad de la arteria coronaria
+T5	ENFERMEDAD 162 174	hipertensión
+T6	ENFERMEDAD 233 272	Enfermedad pulmonar obstructiva crónica
+T7	ENFERMEDAD 277 310	Insuficiencia cardíaca congestiva
+T9	ENFERMEDAD 330 364	enfermedad de la arteria coronaria
+T11	ENFERMEDAD 381 393	hipertensión
+T12	ENFERMEDAD 469 477	angustia
+T13	ENFERMEDAD 632 666	enfermedad de la arteria coronaria
+T14	ENFERMEDAD 671 692	infartos de miocardio
+T15	ENFERMEDAD 780 788	neumonía
+T16	ENFERMEDAD 791 817	insuficiencia respiratoria
+T18	ENFERMEDAD 941 947	disnea
+T19	ENFERMEDAD 1030 1041	sibilancias
+T20	ENFERMEDAD 1067 1070	tos
+T21	ENFERMEDAD 1096 1113	dolor en el pecho
+T22	ENFERMEDAD 1169 1175	disnea
+T23	ENFERMEDAD 1235 1245	distensión
+T24	ENFERMEDAD 1279 1290	taquicardia
+T28	ENFERMEDAD 1389 1394	rales
+T29	ENFERMEDAD 1397 1408	sibilancias
+T30	FARMACO 1620 1637	broncodilatadores
+T31	FARMACO 1685 1695	esteroides
+T32	ENFERMEDAD 1875 1886	sibilancias
+T33	ENFERMEDAD 1889 1894	Rales
+T35	ENFERMEDAD 2066 2099	insuficiencia cardíaca congestiva
+T36	FARMACO 2155 2165	lisinopril
+T37	FARMACO 2168 2176	digoxina
+T38	ENFERMEDAD 2254 2259	rales
+T39	ENFERMEDAD 2300 2306	jadeos
+T40	ENFERMEDAD 2337 2342	edema
+T46	FARMACO 3039 3044	sodio
+T47	FARMACO 3064 3076	medicamentos
+T48	FARMACO 3088 3098	prednisona
+T49	FARMACO 3187 3200	Acetazolamida
+T50	FARMACO 3225 3235	lisinopril
+T51	FARMACO 3267 3275	digoxina
+T53	FARMACO 3308 3322	nitroglicerina
+T54	FARMACO 3402 3410	ventolín
+T56	ENFERMEDAD 3677 3710	insuficiencia cardíaca congestiva

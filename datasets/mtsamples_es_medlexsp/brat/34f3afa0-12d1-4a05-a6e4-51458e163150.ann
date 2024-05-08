@@ -1,0 +1,28 @@
+T1	ENFERMEDAD 34 42	angustia
+T3	ENFERMEDAD 393 401	murmullo
+T4	ENFERMEDAD 506 515	hinchazón
+T12	ENFERMEDAD 854 862	defectos
+T13	ENFERMEDAD 925 933	isquemia
+T14	ENFERMEDAD 939 946	infarto
+T15	ENFERMEDAD 1005 1038	Insuficiencia cardíaca congestiva
+T16	ENFERMEDAD 1058 1079	fibrilación auricular
+T17	ENFERMEDAD 1085 1105	disfunción sistólica
+T18	FARMACO 1181 1199	inhibidores de ACE
+T19	ENFERMEDAD 1241 1261	Edema pulmonar agudo
+T20	ENFERMEDAD 1276 1297	Fibrilación auricular
+T21	FARMACO 1347 1362	betabloqueantes
+T22	FARMACO 1365 1373	digoxina
+T23	ENFERMEDAD 1413 1447	Enfermedad de la arteria coronaria
+T24	ENFERMEDAD 1452 1466	miocardiopatía
+T25	ENFERMEDAD 1467 1476	isquémica
+T26	ENFERMEDAD 1509 1538	Infección del tracto urinario
+T27	ENFERMEDAD 1595 1628	insuficiencia cardíaca congestiva
+T28	ENFERMEDAD 1648 1687	Enfermedad pulmonar obstructiva crónica
+T29	ENFERMEDAD 1701 1725	Función hepática anormal
+T30	ENFERMEDAD 1738 1771	insuficiencia cardíaca congestiva
+T31	ENFERMEDAD 1776 1795	congestión hepática
+T32	ENFERMEDAD 1821 1840	hipercolesterolemia
+T33	ENFERMEDAD 1879 1888	Trastorno
+T36	ENFERMEDAD 1943 1955	Hiponatremia
+T38	ENFERMEDAD 2063 2088	trombosis venosa profunda
+T40	FARMACO 2118 2126	heparina

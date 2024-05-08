@@ -1,0 +1,38 @@
+T1	ENFERMEDAD 24 56	Insuficiencia respiratoria aguda
+T2	ENFERMEDAD 71 81	Bronquitis
+T3	ENFERMEDAD 103 135	insuficiencia respiratoria aguda
+T4	ENFERMEDAD 151 156	Agudo
+T5	ENFERMEDAD 163 190	insuficiencia renal crónica
+T6	ENFERMEDAD 205 217	Hipertensión
+T7	ENFERMEDAD 242 252	disfunción
+T8	ENFERMEDAD 306 316	congestión
+T11	ENFERMEDAD 367 381	Hiperlipidemia
+T12	ENFERMEDAD 478 512	enfermedad de la arteria coronaria
+T14	ENFERMEDAD 533 542	carcinoma
+T16	ENFERMEDAD 601 617	Rinitis alérgica
+T17	ENFERMEDAD 680 688	síntomas
+T18	ENFERMEDAD 693 702	resfriado
+T19	ENFERMEDAD 721 731	bronquitis
+T20	FARMACO 736 748	antibióticos
+T21	ENFERMEDAD 838 854	falta de aliento
+T22	ENFERMEDAD 902 913	sibilancias
+T23	ENFERMEDAD 916 929	crepitaciones
+T24	ENFERMEDAD 996 1006	congestión
+T25	ENFERMEDAD 1009 1019	infiltrado
+T28	ENFERMEDAD 1097 1105	hipóxico
+T29	FARMACO 1241 1251	esteroides
+T31	ENFERMEDAD 1351 1375	enfermedades infecciosas
+T33	ENFERMEDAD 1497 1508	sibilancias
+T34	ENFERMEDAD 1512 1525	crepitaciones
+T35	ENFERMEDAD 1678 1694	congestión nasal
+T36	FARMACO 1723 1733	esteroides
+T38	FARMACO 1824 1839	betabloqueantes
+T39	ENFERMEDAD 1848 1858	disfunción
+T41	FARMACO 1907 1917	esteroides
+T42	FARMACO 1943 1953	esteroides
+T43	FARMACO 2066 2078	Medicamentos
+T44	FARMACO 2082 2092	Metoprolol
+T45	FARMACO 2113 2125	Simvastatina
+T46	FARMACO 2152 2164	medicamentos
+T47	FARMACO 2168 2178	Prednisona
+T48	FARMACO 2347 2354	oxígeno

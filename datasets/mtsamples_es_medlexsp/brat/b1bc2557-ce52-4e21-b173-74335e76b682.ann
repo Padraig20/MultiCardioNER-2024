@@ -1,0 +1,16 @@
+T1	ENFERMEDAD 28 47	derrame pericárdico
+T2	ENFERMEDAD 48 59	sintomático
+T3	ENFERMEDAD 90 109	derrame pericárdico
+T4	ENFERMEDAD 110 121	sintomático
+T5	ENFERMEDAD 221 238	pérdida de sangre
+T7	ENFERMEDAD 482 501	derrame pericárdico
+T8	ENFERMEDAD 533 545	inflamatorio
+T9	ENFERMEDAD 564 583	derrame pericárdico
+T12	FARMACO 738 748	dobutamina
+T13	ENFERMEDAD 795 804	efusiones
+T14	ENFERMEDAD 930 949	derrame pericárdico
+T15	ENFERMEDAD 950 961	sintomático
+T19	ENFERMEDAD 1925 1933	lesiones
+T21	FARMACO 2582 2588	Vicryl
+T23	FARMACO 2633 2639	Vicryl
+T24	FARMACO 2680 2686	vicryl

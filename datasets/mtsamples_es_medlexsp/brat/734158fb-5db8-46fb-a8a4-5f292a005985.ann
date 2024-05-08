@@ -1,0 +1,12 @@
+T1	ENFERMEDAD 22 32	vegetación
+T2	ENFERMEDAD 35 46	bacteriemia
+T3	ENFERMEDAD 135 149	complicaciones
+T4	FARMACO 321 330	lidocaína
+T6	ENFERMEDAD 552 566	complicaciones
+T7	ENFERMEDAD 892 899	coágulo
+T9	ENFERMEDAD 1094 1104	vegetación
+T10	ENFERMEDAD 1178 1198	regurgitación mitral
+T11	ENFERMEDAD 1210 1231	regurgitación aórtica
+T12	ENFERMEDAD 1394 1406	endocarditis
+T13	ENFERMEDAD 1409 1419	vegetación
+T14	ENFERMEDAD 1479 1500	insuficiencia aórtica

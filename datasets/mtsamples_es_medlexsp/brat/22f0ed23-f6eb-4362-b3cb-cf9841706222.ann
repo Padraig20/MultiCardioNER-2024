@@ -1,0 +1,23 @@
+T1	ENFERMEDAD 61 89	taquicardia supraventricular
+T2	ENFERMEDAD 92 100	cianosis
+T3	ENFERMEDAD 201 210	problemas
+T5	ENFERMEDAD 518 531	irritabilidad
+T6	ENFERMEDAD 690 700	diaforesis
+T7	ENFERMEDAD 850 861	taquicardia
+T9	FARMACO 976 985	adenosina
+T13	ENFERMEDAD 1183 1214	hipertrofia ventricular derecha
+T15	ENFERMEDAD 1517 1525	angustia
+T17	FARMACO 1624 1631	oxígeno
+T18	FARMACO 1676 1692	prostaglandina a
+T22	ENFERMEDAD 2160 2165	masas
+T23	ENFERMEDAD 2371 2390	enfermedad cardíaca
+T24	ENFERMEDAD 2401 2410	cianótica
+T25	ENFERMEDAD 2530 2550	corazón entrecruzado
+T26	ENFERMEDAD 2821 2847	defecto septal ventricular
+T27	ENFERMEDAD 2864 2880	atresia pulmonar
+T29	ENFERMEDAD 3264 3283	enfermedad cardíaca
+T30	ENFERMEDAD 3294 3303	cianótica
+T31	ENFERMEDAD 3429 3457	taquicardia supraventricular
+T33	FARMACO 3579 3596	prostaglandina E1
+T34	FARMACO 3666 3683	prostaglandina E1
+T36	ENFERMEDAD 4367 4393	defecto septal ventricular

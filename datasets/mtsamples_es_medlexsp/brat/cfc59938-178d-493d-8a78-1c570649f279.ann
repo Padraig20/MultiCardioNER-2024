@@ -1,0 +1,8 @@
+T2	ENFERMEDAD 48 54	disnea
+T3	FARMACO 252 267	broncodilatador
+T7	ENFERMEDAD 476 500	capacidad pulmonar total
+T8	ENFERMEDAD 563 594	Enfermedad pulmonar restrictiva
+T9	ENFERMEDAD 616 629	obstrucciones
+T10	FARMACO 684 699	broncodilatador
+T11	ENFERMEDAD 762 793	enfermedad pulmonar restrictiva
+T13	ENFERMEDAD 864 875	obstrucción

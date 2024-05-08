@@ -1,0 +1,9 @@
+T1	ENFERMEDAD 28 51	derrame pleural derecho
+T2	ENFERMEDAD 56 82	insuficiencia respiratoria
+T3	ENFERMEDAD 85 91	disnea
+T4	ENFERMEDAD 123 146	derrame pleural derecho
+T5	ENFERMEDAD 151 177	insuficiencia respiratoria
+T6	ENFERMEDAD 180 186	disnea
+T7	FARMACO 273 282	lidocaína
+T8	ENFERMEDAD 524 547	derrame pleural derecho
+T9	ENFERMEDAD 590 595	signo

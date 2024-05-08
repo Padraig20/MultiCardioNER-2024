@@ -1,0 +1,10 @@
+T1	ENFERMEDAD 29 61	Enfermedad coronaria obstructiva
+T3	ENFERMEDAD 80 106	Insuficiencia respiratoria
+T4	ENFERMEDAD 139 171	Enfermedad coronaria obstructiva
+T6	ENFERMEDAD 190 216	Insuficiencia respiratoria
+T7	ENFERMEDAD 380 406	insuficiencia respiratoria
+T12	FARMACO 963 971	betadine
+T15	FARMACO 1365 1387	solución salina normal
+T17	FARMACO 1510 1518	betadine
+T20	ENFERMEDAD 1731 1745	complicaciones
+T21	ENFERMEDAD 1758 1775	Pérdida de sangre

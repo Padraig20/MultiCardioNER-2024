@@ -1,0 +1,15 @@
+T2	ENFERMEDAD 81 107	electrocardiograma anormal
+T4	FARMACO 135 147	Medicamentos
+T5	FARMACO 149 155	femara
+T6	FARMACO 157 167	verapamilo
+T7	FARMACO 186 195	gliburida
+T8	FARMACO 198 208	metformina
+T11	ENFERMEDAD 304 313	anomalías
+T12	ENFERMEDAD 440 446	fatiga
+T13	ENFERMEDAD 451 468	dolor en el pecho
+T14	ENFERMEDAD 642 655	anormalidades
+T17	ENFERMEDAD 1116 1123	defecto
+T20	ENFERMEDAD 1334 1342	isquemia
+T21	ENFERMEDAD 1444 1455	obstructivo
+T22	FARMACO 1473 1482	troponina
+T23	ENFERMEDAD 1495 1522	Miocardiopatía hipertensiva

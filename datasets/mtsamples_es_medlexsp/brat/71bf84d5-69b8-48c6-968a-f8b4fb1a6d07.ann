@@ -1,0 +1,32 @@
+T1	ENFERMEDAD 27 52	Accidente cerebrovascular
+T2	ENFERMEDAD 63 90	debilidad del brazo derecho
+T3	ENFERMEDAD 95 105	Bronquitis
+T4	ENFERMEDAD 110 151	Enfermedad cardiovascular aterosclerótica
+T5	ENFERMEDAD 156 170	Hiperlipidemia
+T6	ENFERMEDAD 175 190	Trombocitopenia
+T7	ENFERMEDAD 219 244	Accidente cerebrovascular
+T8	ENFERMEDAD 249 276	debilidad del brazo derecho
+T9	ENFERMEDAD 294 301	infarto
+T11	ENFERMEDAD 384 388	masa
+T12	ENFERMEDAD 398 405	infarto
+T13	ENFERMEDAD 468 484	Bronquitis aguda
+T14	ENFERMEDAD 489 499	enfermedad
+T15	ENFERMEDAD 539 554	Trombocitopenia
+T16	ENFERMEDAD 585 592	infarto
+T17	ENFERMEDAD 658 699	Enfermedad cardiovascular aterosclerótica
+T18	ENFERMEDAD 704 718	Hiperlipidemia
+T19	FARMACO 792 798	Plavix
+T20	FARMACO 822 830	aspirina
+T21	ENFERMEDAD 880 883	tos
+T22	ENFERMEDAD 927 935	angustia
+T23	ENFERMEDAD 994 1005	obstrucción
+T26	ENFERMEDAD 1132 1138	lesión
+T27	ENFERMEDAD 1139 1150	obstructiva
+T29	ENFERMEDAD 1412 1415	tos
+T30	ENFERMEDAD 1730 1740	infiltrado
+T40	ENFERMEDAD 1952 1955	tos
+T41	ENFERMEDAD 1985 1994	debilidad
+T42	FARMACO 2124 2133	albuterol
+T45	ENFERMEDAD 2325 2335	disfunción
+T46	ENFERMEDAD 2351 2371	regurgitación mitral
+T49	ENFERMEDAD 2526 2534	síntomas

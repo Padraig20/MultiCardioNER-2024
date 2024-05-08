@@ -1,0 +1,18 @@
+T1	ENFERMEDAD 192 197	tumor
+T3	ENFERMEDAD 629 661	Carcinoma de células no pequeñas
+T5	ENFERMEDAD 680 688	Invasión
+T6	ENFERMEDAD 728 736	Invasión
+T7	ENFERMEDAD 775 791	Invasión pleural
+T8	ENFERMEDAD 999 1031	carcinoma de células no pequeñas
+T9	ENFERMEDAD 1060 1074	adenocarcinoma
+T10	ENFERMEDAD 1087 1092	tumor
+T11	ENFERMEDAD 1101 1109	Invasión
+T12	ENFERMEDAD 1149 1157	Invasión
+T13	ENFERMEDAD 1196 1212	Invasión pleural
+T14	ENFERMEDAD 1467 1477	patológico
+T15	ENFERMEDAD 1489 1496	tumores
+T16	ENFERMEDAD 1596 1613	tumores primarios
+T17	ENFERMEDAD 1698 1730	carcinoma de células no pequeñas
+T19	ENFERMEDAD 1791 1815	diferenciación glandular
+T20	ENFERMEDAD 1851 1860	carcinoma
+T21	ENFERMEDAD 1933 1974	adenocarcinoma moderadamente diferenciado

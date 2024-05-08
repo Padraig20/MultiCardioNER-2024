@@ -1,0 +1,13 @@
+T1	ENFERMEDAD 133 157	Síndrome coronario agudo
+T2	FARMACO 332 340	heparina
+T3	ENFERMEDAD 357 371	Complicaciones
+T5	ENFERMEDAD 500 520	infarto de miocardio
+T6	ENFERMEDAD 522 547	accidente cerebrovascular
+T7	ENFERMEDAD 557 561	daño
+T8	ENFERMEDAD 600 611	perforación
+T9	ENFERMEDAD 688 697	infección
+T10	ENFERMEDAD 699 707	sangrado
+T11	ENFERMEDAD 709 716	alergia
+T12	ENFERMEDAD 1150 1160	enfermedad
+T13	ENFERMEDAD 1311 1321	enfermedad
+T14	ENFERMEDAD 1405 1425	Enfermedad coronaria

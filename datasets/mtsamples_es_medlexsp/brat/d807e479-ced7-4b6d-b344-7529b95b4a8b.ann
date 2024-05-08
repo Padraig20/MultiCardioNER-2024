@@ -1,0 +1,17 @@
+T1	ENFERMEDAD 71 85	Complicaciones
+T2	ENFERMEDAD 97 114	Pérdida de sangre
+T3	ENFERMEDAD 308 316	síntomas
+T4	ENFERMEDAD 320 353	insuficiencia cardíaca congestiva
+T6	ENFERMEDAD 418 427	arritmias
+T7	FARMACO 564 579	betabloqueantes
+T10	FARMACO 1349 1358	lidocaína
+T11	FARMACO 1363 1373	epinefrina
+T12	ENFERMEDAD 1484 1492	sedación
+T13	FARMACO 1508 1519	analgésicos
+T14	FARMACO 2337 2347	esteroides
+T19	ENFERMEDAD 3066 3080	complicaciones
+T22	FARMACO 3369 3379	esteroides
+T25	ENFERMEDAD 3930 3944	complicaciones
+T26	FARMACO 4051 4063	antibióticos
+T27	ENFERMEDAD 4099 4132	insuficiencia cardíaca congestiva
+T28	ENFERMEDAD 4138 4146	arritmia

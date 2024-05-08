@@ -1,0 +1,20 @@
+T1	ENFERMEDAD 13 44	estenosis de la válvula aórtica
+T2	ENFERMEDAD 49 83	enfermedad de la arteria coronaria
+T3	ENFERMEDAD 97 130	insuficiencia cardíaca congestiva
+T4	ENFERMEDAD 149 157	diabetes
+T5	ENFERMEDAD 163 168	obeso
+T6	ENFERMEDAD 595 628	insuficiencia cardíaca congestiva
+T7	ENFERMEDAD 651 659	diabetes
+T8	ENFERMEDAD 749 759	estenótica
+T9	ENFERMEDAD 790 824	enfermedad de la arteria coronaria
+T10	ENFERMEDAD 1093 1103	enfermedad
+T11	ENFERMEDAD 1604 1613	estenosis
+T12	ENFERMEDAD 1666 1675	estenosis
+T14	ENFERMEDAD 2061 2069	obesidad
+T21	ENFERMEDAD 3411 3422	anastomosis
+T22	ENFERMEDAD 3522 3532	enfermedad
+T23	ENFERMEDAD 3605 3617	anastomosada
+T24	ENFERMEDAD 3674 3685	anastomosis
+T25	FARMACO 3877 3886	protamina
+T26	ENFERMEDAD 3905 3919	efecto adverso
+T27	FARMACO 4015 4021	Vicryl

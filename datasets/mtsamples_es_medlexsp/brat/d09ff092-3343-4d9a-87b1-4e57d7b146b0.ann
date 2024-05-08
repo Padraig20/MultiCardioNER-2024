@@ -1,0 +1,13 @@
+T1	ENFERMEDAD 31 52	Neumotórax espontáneo
+T2	ENFERMEDAD 74 80	trauma
+T3	ENFERMEDAD 97 123	Insuficiencia respiratoria
+T4	ENFERMEDAD 128 136	Neumonía
+T5	ENFERMEDAD 141 147	sepsis
+T6	ENFERMEDAD 181 202	Neumotórax espontáneo
+T7	ENFERMEDAD 224 230	trauma
+T8	ENFERMEDAD 247 273	Insuficiencia respiratoria
+T9	ENFERMEDAD 278 286	Neumonía
+T10	ENFERMEDAD 291 297	sepsis
+T11	ENFERMEDAD 378 386	sépticos
+T13	ENFERMEDAD 1162 1179	Pérdida de sangre
+T14	ENFERMEDAD 1198 1212	complicaciones

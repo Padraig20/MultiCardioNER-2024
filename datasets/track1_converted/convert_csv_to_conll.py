@@ -2,13 +2,13 @@ import re
 import pandas as pd
 
 # Load your data
-data = pd.read_csv('all_train.csv', delimiter='|')
+data = pd.read_csv('../mtsamples_es_medlexsp/all_train.csv', delimiter='|')
 
 # Regex pattern for tokenization
 token_pattern = r"\w+|\w+(?='s)|'s|['\".,!?;]"
 
 # Path for the output file
-output_path = 'all_train.conll'
+output_path = '../mtsamples_es_medlexsp/all_train.conll'
 
 # Process and write to file
 with open(output_path, 'w') as file:

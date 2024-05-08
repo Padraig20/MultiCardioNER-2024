@@ -1,0 +1,15 @@
+T1	ENFERMEDAD 45 58	masa pulmonar
+T2	ENFERMEDAD 72 87	derrame pleural
+T3	ENFERMEDAD 175 204	fibrilación auricular crónica
+T4	ENFERMEDAD 389 413	dificultad para respirar
+T5	ENFERMEDAD 441 448	síntoma
+T6	ENFERMEDAD 545 566	fibrilación auricular
+T7	FARMACO 576 588	medicamentos
+T8	FARMACO 638 646	Digoxina
+T9	ENFERMEDAD 920 938	Trastorno pulmonar
+T10	ENFERMEDAD 943 956	masa pulmonar
+T11	ENFERMEDAD 961 976	Derrame pleural
+T12	ENFERMEDAD 981 1002	Fibrilación auricular
+T13	ENFERMEDAD 1039 1057	trastorno pulmonar
+T14	ENFERMEDAD 1215 1236	fibrilación auricular
+T15	FARMACO 1283 1295	medicamentos

@@ -1,0 +1,9 @@
+T1	ENFERMEDAD 31 44	Osteomielitis
+T2	ENFERMEDAD 139 152	Osteomielitis
+T3	ENFERMEDAD 328 335	séptico
+T4	ENFERMEDAD 351 364	osteomielitis
+T8	FARMACO 1385 1397	clorhexidina
+T10	FARMACO 2356 2364	monocryl
+T11	FARMACO 2527 2542	solución salina
+T14	ENFERMEDAD 2750 2764	complicaciones
+T15	ENFERMEDAD 2788 2805	pérdida de sangre

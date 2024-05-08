@@ -1,0 +1,18 @@
+T1	ENFERMEDAD 115 148	fibrilación auricular paroxística
+T3	ENFERMEDAD 215 226	hipocalemia
+T4	ENFERMEDAD 258 275	apnea obstructiva
+T5	FARMACO 314 321	cafeína
+T6	ENFERMEDAD 324 337	estrés mental
+T8	FARMACO 417 426	Diltiazem
+T9	ENFERMEDAD 447 468	fibrilación auricular
+T10	ENFERMEDAD 1176 1185	problemas
+T11	FARMACO 1339 1348	fentanilo
+T14	FARMACO 1602 1611	Diltiazem
+T18	ENFERMEDAD 1797 1818	fibrilación auricular
+T20	ENFERMEDAD 1935 1946	hipocalemia
+T21	ENFERMEDAD 2047 2062	apnea del sueño
+T23	ENFERMEDAD 2251 2264	estrés mental
+T24	FARMACO 2350 2357	sotalol
+T25	FARMACO 2376 2386	Metoprolol
+T26	FARMACO 2405 2414	Diltiazem
+T28	FARMACO 2438 2446	digoxina

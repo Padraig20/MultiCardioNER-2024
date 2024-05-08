@@ -1,0 +1,10 @@
+T2	FARMACO 231 240	lidocaína
+T3	ENFERMEDAD 260 277	Pérdida de sangre
+T4	ENFERMEDAD 550 576	insuficiencia respiratoria
+T5	ENFERMEDAD 659 667	disfagia
+T6	ENFERMEDAD 700 712	desnutrición
+T10	FARMACO 1046 1055	lidocaína
+T12	FARMACO 1485 1516	solución salina bacteriostática
+T16	FARMACO 1767 1789	solución salina normal
+T17	FARMACO 1853 1891	solución salina normal bacteriostática
+T20	ENFERMEDAD 2305 2319	complicaciones

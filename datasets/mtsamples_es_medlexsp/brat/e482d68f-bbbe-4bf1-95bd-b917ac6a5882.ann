@@ -1,0 +1,8 @@
+T3	FARMACO 216 231	broncodilatador
+T5	ENFERMEDAD 251 273	capacidad inspiratoria
+T6	ENFERMEDAD 339 363	capacidad pulmonar total
+T7	ENFERMEDAD 392 423	Enfermedad pulmonar obstructiva
+T8	FARMACO 458 473	broncodilatador
+T11	ENFERMEDAD 574 582	fibrosis
+T12	ENFERMEDAD 610 632	capacidad inspiratoria
+T13	ENFERMEDAD 651 675	capacidad pulmonar total

@@ -1,0 +1,17 @@
+T2	ENFERMEDAD 77 83	angina
+T3	ENFERMEDAD 126 155	enfermedad cardíaca isquémica
+T4	ENFERMEDAD 170 184	miocardiopatía
+T5	ENFERMEDAD 185 194	isquémica
+T7	FARMACO 315 338	trifosfato de adenosina
+T8	FARMACO 477 485	tecnecio
+T9	ENFERMEDAD 632 645	anormalidades
+T10	FARMACO 757 766	adenosina
+T11	ENFERMEDAD 826 834	defectos
+T12	ENFERMEDAD 871 905	enfermedad de la arteria coronaria
+T13	ENFERMEDAD 931 939	isquemia
+T14	ENFERMEDAD 977 984	defecto
+T16	ENFERMEDAD 1038 1045	defecto
+T17	ENFERMEDAD 1159 1167	isquemia
+T18	ENFERMEDAD 1792 1826	enfermedad de la arteria coronaria
+T19	ENFERMEDAD 1856 1863	infarto
+T20	ENFERMEDAD 1937 1945	isquemia

@@ -1,0 +1,12 @@
+T1	ENFERMEDAD 55 63	problema
+T2	ENFERMEDAD 70 91	hipertensión esencial
+T3	ENFERMEDAD 103 111	síntomas
+T4	ENFERMEDAD 127 136	patología
+T5	FARMACO 211 228	hidroclorotiazida
+T6	ENFERMEDAD 348 365	dolor en el pecho
+T7	ENFERMEDAD 367 383	falta de aliento
+T8	ENFERMEDAD 390 411	hinchazón del tobillo
+T9	ENFERMEDAD 414 420	mareos
+T10	ENFERMEDAD 621 626	edema
+T12	ENFERMEDAD 773 788	ataque cardíaco
+T13	FARMACO 1205 1216	medicamento

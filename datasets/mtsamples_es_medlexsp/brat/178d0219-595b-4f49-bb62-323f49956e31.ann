@@ -1,0 +1,7 @@
+T1	ENFERMEDAD 15 29	miocardiopatía
+T2	ENFERMEDAD 30 39	isquémica
+T3	ENFERMEDAD 61 81	infarto de miocardio
+T4	FARMACO 223 232	adenosina
+T6	FARMACO 294 303	adenosina
+T7	ENFERMEDAD 551 572	Fibrilación auricular
+T10	FARMACO 769 778	adenosina

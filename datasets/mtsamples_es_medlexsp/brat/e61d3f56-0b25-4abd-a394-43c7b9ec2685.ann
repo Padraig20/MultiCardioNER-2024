@@ -1,0 +1,14 @@
+T3	FARMACO 309 318	Ultravist
+T4	FARMACO 437 451	nitroglicerina
+T5	ENFERMEDAD 561 577	reacción adversa
+T6	ENFERMEDAD 912 946	enfermedad de la arteria coronaria
+T8	ENFERMEDAD 1175 1184	estenosis
+T10	ENFERMEDAD 1353 1359	lesión
+T11	ENFERMEDAD 1433 1442	estenosis
+T12	ENFERMEDAD 1759 1768	estenosis
+T13	ENFERMEDAD 1902 1916	aterosclerosis
+T14	ENFERMEDAD 1980 1989	estenosis
+T15	ENFERMEDAD 2069 2082	anormalidades
+T17	ENFERMEDAD 2188 2202	aterosclerosis
+T18	ENFERMEDAD 2295 2329	Enfermedad de la arteria coronaria
+T21	FARMACO 2527 2536	estatinas

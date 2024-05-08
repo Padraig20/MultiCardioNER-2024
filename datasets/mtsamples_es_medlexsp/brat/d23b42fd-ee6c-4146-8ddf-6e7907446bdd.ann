@@ -1,0 +1,17 @@
+T1	ENFERMEDAD 44 56	leucocitosis
+T2	ENFERMEDAD 61 87	Insuficiencia respiratoria
+T3	ENFERMEDAD 119 137	Pancreatitis aguda
+T4	ENFERMEDAD 184 196	leucocitosis
+T5	ENFERMEDAD 201 227	Insuficiencia respiratoria
+T6	ENFERMEDAD 259 277	Pancreatitis aguda
+T7	FARMACO 462 471	Lidocaína
+T8	ENFERMEDAD 474 491	Pérdida de sangre
+T10	ENFERMEDAD 510 524	Complicaciones
+T11	ENFERMEDAD 611 623	pancreatitis
+T12	ENFERMEDAD 650 662	deshidratada
+T13	FARMACO 722 733	hipotensivo
+T14	ENFERMEDAD 802 828	dificultades para respirar
+T15	ENFERMEDAD 841 849	hipóxico
+T16	ENFERMEDAD 1002 1014	leucocitosis
+T19	ENFERMEDAD 1629 1634	edema
+T20	ENFERMEDAD 1637 1645	anasarca

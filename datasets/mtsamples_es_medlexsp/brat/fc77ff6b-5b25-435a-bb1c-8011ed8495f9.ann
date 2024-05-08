@@ -1,0 +1,10 @@
+T2	FARMACO 55 65	cardiolite
+T3	ENFERMEDAD 132 149	diabetes mellitus
+T4	ENFERMEDAD 151 163	hipertensión
+T5	ENFERMEDAD 166 189	bloqueo de rama derecha
+T7	ENFERMEDAD 472 479	síntoma
+T8	ENFERMEDAD 512 519	bloqueo
+T9	ENFERMEDAD 604 617	anormalidades
+T10	FARMACO 740 745	TC-99
+T13	ENFERMEDAD 1113 1120	defecto
+T14	ENFERMEDAD 1349 1369	enfermedad coronaria

@@ -1,0 +1,21 @@
+T1	ENFERMEDAD 25 37	exacerbación
+T2	ENFERMEDAD 41 80	enfermedad pulmonar obstructiva crónica
+T3	ENFERMEDAD 82 86	EPOC
+T4	ENFERMEDAD 90 106	bronquitis aguda
+T5	ENFERMEDAD 133 145	Exacerbación
+T6	ENFERMEDAD 149 188	enfermedad pulmonar obstructiva crónica
+T7	ENFERMEDAD 191 207	bronquitis aguda
+T8	ENFERMEDAD 212 245	Insuficiencia cardíaca congestiva
+T9	ENFERMEDAD 250 291	Enfermedad cardiovascular aterosclerótica
+T10	ENFERMEDAD 296 318	Demencia senil
+T12	ENFERMEDAD 328 342	Hipotiroidismo
+T13	FARMACO 363 370	oxígeno
+T15	FARMACO 505 517	medicamentos
+T16	FARMACO 568 577	enalapril
+T17	FARMACO 636 644	aspirina
+T18	FARMACO 659 668	albuterol
+T19	FARMACO 704 722	cloruro de potasio
+T21	FARMACO 888 895	oxígeno
+T31	ENFERMEDAD 1522 1543	sobrecarga de líquido
+T33	ENFERMEDAD 1662 1678	falta de aliento
+T35	ENFERMEDAD 1925 1934	problemas

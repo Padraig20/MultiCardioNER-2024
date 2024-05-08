@@ -1,0 +1,15 @@
+T1	ENFERMEDAD 31 37	Disnea
+T3	ENFERMEDAD 114 133	Síndrome metabólico
+T4	ENFERMEDAD 172 192	enfermedad coronaria
+T5	ENFERMEDAD 312 331	Síndrome metabólico
+T6	ENFERMEDAD 458 472	Complicaciones
+T10	FARMACO 786 795	fentanilo
+T11	ENFERMEDAD 1933 1944	hipocinesis
+T12	ENFERMEDAD 2079 2099	regurgitación mitral
+T13	ENFERMEDAD 2118 2152	Enfermedad de la arteria coronaria
+T16	ENFERMEDAD 2426 2434	ulcerada
+T19	ENFERMEDAD 3143 3153	enfermedad
+T20	ENFERMEDAD 3462 3472	enfermedad
+T23	ENFERMEDAD 3869 3878	estenosis
+T27	ENFERMEDAD 4107 4113	lesión
+T31	FARMACO 4485 4493	aspirina

@@ -1,0 +1,18 @@
+T2	ENFERMEDAD 115 123	neumonía
+T3	ENFERMEDAD 267 283	embolia pulmonar
+T4	ENFERMEDAD 357 373	embolia arterial
+T6	ENFERMEDAD 475 488	cardiomegalia
+T7	ENFERMEDAD 614 625	atelectasis
+T8	ENFERMEDAD 671 686	nódulo pulmonar
+T9	ENFERMEDAD 774 799	derrame pleural izquierdo
+T10	ENFERMEDAD 804 815	atelectasia
+T11	ENFERMEDAD 865 888	derrame pleural derecho
+T12	ENFERMEDAD 933 948	nódulo pulmonar
+T13	ENFERMEDAD 996 1005	granuloma
+T15	ENFERMEDAD 1084 1100	embolia arterial
+T16	ENFERMEDAD 1180 1210	hipertensión arterial pulmonar
+T17	ENFERMEDAD 1215 1228	Cardiomegalia
+T18	ENFERMEDAD 1335 1354	Efusiones pleurales
+T19	ENFERMEDAD 1412 1423	atelectasis
+T20	ENFERMEDAD 1462 1469	nódulos
+T21	ENFERMEDAD 1507 1525	nódulos pulmonares

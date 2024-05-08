@@ -1,0 +1,7 @@
+T1	FARMACO 270 280	cefazolina
+T2	FARMACO 283 294	gentamicina
+T5	FARMACO 644 652	heparina
+T6	FARMACO 1284 1299	solución salina
+T8	FARMACO 1991 2006	solución salina
+T10	ENFERMEDAD 2332 2346	complicaciones
+T11	ENFERMEDAD 2909 2915	trauma

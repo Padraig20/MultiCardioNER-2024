@@ -1,0 +1,17 @@
+T1	ENFERMEDAD 66 71	obesa
+T3	ENFERMEDAD 122 142	enfermedad coronaria
+T4	ENFERMEDAD 191 212	enfermedad de Hodgkin
+T6	ENFERMEDAD 293 319	infarto agudo de miocardio
+T8	ENFERMEDAD 344 361	dolor en el pecho
+T9	FARMACO 410 416	Plavix
+T20	ENFERMEDAD 2357 2368	anormalidad
+T21	ENFERMEDAD 2466 2477	hipocinesis
+T23	ENFERMEDAD 2552 2572	regurgitación mitral
+T24	ENFERMEDAD 2613 2633	infarto de miocardio
+T25	FARMACO 2694 2711	enzimas cardíacas
+T27	FARMACO 2977 2996	inhibidor de la ECA
+T28	FARMACO 3001 3015	betabloqueante
+T29	FARMACO 3017 3025	aspirina
+T30	FARMACO 3027 3033	plavix
+T31	FARMACO 3035 3043	nitratos
+T32	ENFERMEDAD 3089 3095	trombo

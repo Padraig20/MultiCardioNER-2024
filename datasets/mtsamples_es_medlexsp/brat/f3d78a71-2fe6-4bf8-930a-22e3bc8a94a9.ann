@@ -1,0 +1,18 @@
+T1	ENFERMEDAD 20 26	Angina
+T2	ENFERMEDAD 31 65	Enfermedad de la arteria coronaria
+T3	ENFERMEDAD 375 380	masas
+T4	ENFERMEDAD 434 442	dilatado
+T5	ENFERMEDAD 447 458	hipocinesis
+T8	ENFERMEDAD 605 618	engrosamiento
+T9	ENFERMEDAD 670 678	dilatada
+T10	ENFERMEDAD 783 791	prolapso
+T11	ENFERMEDAD 795 805	vegetación
+T12	ENFERMEDAD 820 840	regurgitación mitral
+T14	ENFERMEDAD 956 966	disfunción
+T15	ENFERMEDAD 1167 1191	regurgitación tricúspide
+T16	ENFERMEDAD 1341 1360	derrame pericárdico
+T17	ENFERMEDAD 1403 1416	Engrosamiento
+T18	ENFERMEDAD 1476 1484	dilatado
+T20	ENFERMEDAD 1502 1522	Regurgitación mitral
+T21	ENFERMEDAD 1532 1542	Disfunción
+T22	ENFERMEDAD 1566 1587	Hipertensión pulmonar
