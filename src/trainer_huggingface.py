@@ -144,7 +144,15 @@ if args.clinical_trials_ner:
     dataset_train = dataloader_train.get_dataset("../datasets/ct-ebm-sp/" + args.clinical_trials_ner + "/train/train.conll")
     dataset_test = dataloader_test.get_dataset("../datasets/ct-ebm-sp/" + args.clinical_trials_ner + "/dev/dev.conll")
 
-model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
+from transformers import AutoConfig
+
+config = AutoConfig.from_pretrained(model_chkp)
+config.num_labels = len(ids_to_label)
+print(config)
+
+#model = AutoModelForTokenClassification.from_pretrained(model_chkp, num_labels=len(ids_to_label))
+
+model = AutoModelForTokenClassification.from_pretrained(model_chkp, config=config)
 
 model_name = model_checkpoint.split("/")[-1]
 args_train = TrainingArguments(
@@ -175,6 +183,9 @@ def compute_metrics(p):
     flat_true_predictions = [p for sublist in true_predictions for p in sublist]
 
     flat_true_labels = [l for sublist in true_labels for l in sublist]
+    
+    print(flat_true_predictions)
+    print(flat_true_labels)
 
     tracker = MetricsTracking(args.type, tensor_input=False)
     tracker.update(flat_true_predictions, flat_true_labels)
