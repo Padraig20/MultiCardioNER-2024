@@ -132,9 +132,9 @@ else:
     
 dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
-
-dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train/all_train.conll")
-dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
+if not args.clinical_trials_ner:
+    dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train/all_train.conll")
+    dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
     dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{args.type}/all_train.conll") #TODO: Add FARMACO
