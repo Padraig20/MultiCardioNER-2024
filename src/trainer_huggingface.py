@@ -21,14 +21,22 @@ parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
                     help='Choose whether to use data augmentation or not. This adds the mtsamples dataset to the training data.')
 parser.add_argument('-ctn', '--clinical_trials_ner', type=str, default=None,
                     help='Choose this option if you want to finetune your model onto the clinical trials dataset. Use FARMACO or ENFERMEDAD.')
+parser.add_argument('-t', '--type', type=str, default='ENFERMEDAD',
+                    help='Choose the entity type of the model. Choose from: ENFERMEDAD, FARMACO. Default is ENFERMEDAD.')
 
 args = parser.parse_args()
 
 if args.stride is not None and args.stride < 0:
     raise ValueError("Stride must be greater than zero.")
 
-if args.clinical_trials_ner and args.clinical_trials_ner not in ['ENFERMEDAD']: # TODO ['FARMACO', 'ENFERMEDAD']
+if args.clinical_trials_ner and args.clinical_trials_ner not in ['FARMACO', 'ENFERMEDAD']:
     raise ValueError("Clinical Trials NER must be either FARMACO or ENFERMEDAD.")
+
+if args.clinical_trials_ner:
+    args.type = args.clinical_trials_ner
+
+if args.type not in ['ENFERMEDAD', 'FARMACO']:
+    raise ValueError("Type must be either ENFERMEDAD or FARMACO.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
@@ -49,42 +57,67 @@ if args.input:
     model_chkp = 'model_' + model_checkpoint
 
 label_to_ids = {
-    'B-ENFERMEDAD': 0,
-    'I-ENFERMEDAD': 1,
+    f'B-{args.type}': 0,
+    f'I-{args.type}': 1,
     'O': 2
 }
 
 ids_to_label = {
-    0:'B-ENFERMEDAD',
-    1:'I-ENFERMEDAD',
+    0:f'B-{args.type}',
+    1:f'I-{args.type}',
     2:'O'
 }
 
 if model_checkpoint == "lcampillos/roberta-es-clinical-trials-ner":
     
-    label_to_ids = {
-        'B-ANAT': 0,
-        'B-CHEM': 2,
-        'B-ENFERMEDAD': 4, #DISO
-        'B-PROC': 6,
-        'I-ANAT': 1,
-        'I-CHEM': 3,
-        'I-ENFERMEDAD': 5, #DISO
-        'I-PROC': 7,
-        'O': 8
-    }
+    if args.type == 'ENFERMEDAD':
+        label_to_ids = {
+            'B-ANAT': 0,
+            'B-CHEM': 2,
+            'B-ENFERMEDAD': 4, #DISO
+            'B-PROC': 6,
+            'I-ANAT': 1,
+            'I-CHEM': 3,
+            'I-ENFERMEDAD': 5, #DISO
+            'I-PROC': 7,
+            'O': 8
+        }
 
-    ids_to_label = {
-        0:'O',
-        1:'O',
-        2:'O',
-        3:'O',
-        4:'B-ENFERMEDAD', #DISO
-        5:'I-ENFERMEDAD', #DISO
-        6:'O',
-        7:'O',
-        8:'O'
-    }
+        ids_to_label = {
+            0:'O',
+            1:'O',
+            2:'O',
+            3:'O',
+            4:'B-ENFERMEDAD', #DISO
+            5:'I-ENFERMEDAD', #DISO
+            6:'O',
+            7:'O',
+            8:'O'
+        }
+    else:
+        label_to_ids = {
+            'B-ANAT': 0,
+            'B-FARMACO': 2, #CHEM
+            'B-DISO': 4,
+            'B-PROC': 6,
+            'I-ANAT': 1,
+            'I-FARMACO': 3, #CHEM
+            'I-DISO': 5,
+            'I-PROC': 7,
+            'O': 8
+        }
+
+        ids_to_label = {
+            0:'O',
+            1:'O',
+            2:'B-FARMACO', #CHEM
+            3:'I-FARMACO', #CHEM
+            4:'O',
+            5:'O',
+            6:'O',
+            7:'O',
+            8:'O'
+        }
 
 label_list = list(ids_to_label.values())
 
@@ -104,7 +137,7 @@ dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train
 dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
-    dataset_augmented = dataloader_train.get_dataset("../datasets/mtsamples_es_medlexsp/ENFERMEDAD/all_train.conll") #TODO: Add FARMACO
+    dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{args.type}/all_train.conll") #TODO: Add FARMACO
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 if args.clinical_trials_ner:
