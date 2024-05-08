@@ -151,6 +151,7 @@ print(model.config)
 model_name = model_checkpoint.split("/")[-1]
 args_train = TrainingArguments(
     f"{model_name}-finetuned-multicardioner",
+    evaluation_strategy = "epoch",
     learning_rate=args.learning_rate,
     per_device_train_batch_size=args.batch_size,
     per_device_eval_batch_size=args.batch_size,
