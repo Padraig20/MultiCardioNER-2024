@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-o', '--output', type=str, default=None,
                     help='Choose where to save the model after pre-training.')
-parser.add_argument('-lr', '--learning_rate', type=float, default=1e-2,
+parser.add_argument('-lr', '--learning_rate', type=float, default=2e-5,
                     help='Choose the learning rate of the model.')
 parser.add_argument('-e', '--epochs', type=int, default=10,
                     help='Choose the epochs of the model.')

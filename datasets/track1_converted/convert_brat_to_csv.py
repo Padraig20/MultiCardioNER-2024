@@ -77,13 +77,13 @@ def read_files_from_directory(directory):
             files.append(str(file_path)[:len(file_path)-4])
     return files
 
-directory = '../mtsamples_es_medlexsp/brat/'
+directory = '../track2/drugtemist_train/it/brat/'
 files = read_files_from_directory(directory)
 unique_files = set(files)
 
 for file in files:
     text_file = file + ".txt"
     ann_file = file + ".ann"
-    output_csv = "../mtsamples_es_medlexsp/all_train.csv"
+    output_csv = "../track2_converted/train/it/all_train.json"
     print(file)
     convert_brat_to_csv(text_file, ann_file, output_csv)
