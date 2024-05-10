@@ -21,10 +21,15 @@ parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
                     help='Choose whether to use data augmentation or not. This adds the mtsamples dataset to the training data.')
 parser.add_argument('-ctn', '--clinical_trials_ner', type=str, default=None,
                     help='Choose this option if you want to finetune your model onto the clinical trials dataset. Use FARMACO or ENFERMEDAD.')
-parser.add_argument('-t', '--type', type=str, default='ENFERMEDAD',
-                    help='Choose the entity type of the model. Choose from: ENFERMEDAD, FARMACO. Default is ENFERMEDAD.')
+parser.add_argument('-l', '--language', type=str, default=None,
+                    help='Choose the language (if the model is to be trained onto FARMACO). Use es, en, it or all.')
 
 args = parser.parse_args()
+
+if args.language:
+    entity_type = 'FARMACO'
+else:
+    entity_type = 'ENFERMEDAD'
 
 if args.stride is not None and args.stride < 0:
     raise ValueError("Stride must be greater than zero.")
@@ -33,10 +38,10 @@ if args.clinical_trials_ner and args.clinical_trials_ner not in ['FARMACO', 'ENF
     raise ValueError("Clinical Trials NER must be either FARMACO or ENFERMEDAD.")
 
 if args.clinical_trials_ner:
-    args.type = args.clinical_trials_ner
+    entity_type = args.clinical_trials_ner
 
-if args.type not in ['ENFERMEDAD', 'FARMACO']:
-    raise ValueError("Type must be either ENFERMEDAD or FARMACO.")
+if args.language not in ['es', 'en', 'it', 'all']:
+    raise ValueError("Language must be either es, en, it or all.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
@@ -57,20 +62,20 @@ if args.input:
     model_chkp = 'model_' + model_checkpoint
 
 label_to_ids = {
-    f'B-{args.type}': 0,
-    f'I-{args.type}': 1,
+    f'B-{entity_type}': 0,
+    f'I-{entity_type}': 1,
     'O': 2
 }
 
 ids_to_label = {
-    0:f'B-{args.type}',
-    1:f'I-{args.type}',
+    0:f'B-{entity_type}',
+    1:f'I-{entity_type}',
     2:'O'
 }
 
 if model_checkpoint == "lcampillos/roberta-es-clinical-trials-ner":
     
-    if args.type == 'ENFERMEDAD':
+    if entity_type == 'ENFERMEDAD':
         label_to_ids = {
             'B-ANAT': 0,
             'B-CHEM': 2,
@@ -137,7 +142,7 @@ if not args.clinical_trials_ner:
     dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
 
 if args.data_augmentation:
-    dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{args.type}/all_train.conll")
+    dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{entity_type}/all_train.conll")
     dataset_train = concatenate_datasets([dataset_train, dataset_augmented])
 
 if args.clinical_trials_ner:
@@ -179,7 +184,7 @@ def compute_metrics(p):
 
     flat_true_labels = [l for sublist in true_labels for l in sublist]
 
-    tracker = MetricsTracking(args.type, tensor_input=False)
+    tracker = MetricsTracking(entity_type, tensor_input=False)
     tracker.update(flat_true_predictions, flat_true_labels)
 
     return tracker.return_avg_metrics()
