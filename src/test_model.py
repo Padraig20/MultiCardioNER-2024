@@ -55,18 +55,22 @@ ner_model = pipeline("ner", model=model, tokenizer=tokenizer, aggregation_strate
 
 def extract_entities_from_text(text):
     doc = nlp(text)
+    sentences = [sent.text for sent in doc.sents]
+    sentence_offsets = [sent.start_char for sent in doc.sents]
+
+    sentence_entities_batch = ner_model(sentences, batch_size=len(sentences)) #adjust batch size
+
     entities = []
-
-    for sent in doc.sents:
-        sentence_entities = ner_model(sent.text)
-
+    for sent_idx, sentence_entities in enumerate(sentence_entities_batch):
+        start_offset = sentence_offsets[sent_idx]
+        
         for entity in sentence_entities:
-            text = entity['word']
+            entity_text = entity['word']
             entity_type = entity['entity_group']
-            start = entity['start'] + sent.start_char  # adjust start index
-            end = entity['end'] + sent.start_char      # adjust end index
+            start = entity['start'] + start_offset
+            end = entity['end'] + start_offset
             
-            entities.append((text, entity_type, start, end))
+            entities.append((entity_text, entity_type, start, end))
 
     return entities
 
