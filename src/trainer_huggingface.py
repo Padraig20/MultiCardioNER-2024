@@ -21,7 +21,7 @@ parser.add_argument('-dg', '--data_augmentation', type=bool, default=False,
                     help='Choose whether to use data augmentation or not. This adds the mtsamples dataset to the training data.')
 parser.add_argument('-ctn', '--clinical_trials_ner', type=str, default=None,
                     help='Choose this option if you want to finetune your model onto the clinical trials dataset. Use FARMACO or ENFERMEDAD.')
-parser.add_argument('-l', '--language', type=str, default=None,
+parser.add_argument('-lang', '--language', type=str, default=None,
                     help='Choose the language (if the model is to be trained onto FARMACO). Use es, en, it or all.')
 
 args = parser.parse_args()
@@ -51,7 +51,7 @@ from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDatas
 from datasets import concatenate_datasets
 
 
-model_checkpoint = "microsoft/mdeberta-v3-base"
+model_checkpoint = "lcampillos/roberta-es-clinical-trials-ner"
 tokenizer_chkp = model_checkpoint
 model_chkp = model_checkpoint
 max_tokens = args.input_length
@@ -138,8 +138,18 @@ else:
 dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
 if not args.clinical_trials_ner:
-    dataset_train = dataloader_train.get_dataset("../datasets/track1_converted/train/all_train.conll")
-    dataset_test = dataloader_test.get_dataset("../datasets/track1_converted/dev/all_dev.conll")
+    train_path = "../datasets/track1_converted/train/all_train.conll"
+    dev_path = "../datasets/track1_converted/dev/all_dev.conll"
+    if entity_type == 'FARMACO':
+        if args.language == 'all':
+            train_path = "../datasets/track2_converted/train/all_train.conll"
+            dev_path = "../datasets/track2_converted/dev/all_dev.conll"
+        else:
+            train_path = f"../datasets/track2_converted/train/{args.language}/all_train.conll"
+            dev_path = f"../datasets/track2_converted/dev/{args.language}/all_dev.conll"
+            print(f"Training on {args.language} data for {entity_type}.")
+    dataset_train = dataloader_train.get_dataset(train_path)
+    dataset_test = dataloader_test.get_dataset(dev_path)
 
 if args.data_augmentation:
     dataset_augmented = dataloader_train.get_dataset(f"../datasets/mtsamples_es_medlexsp/{entity_type}/all_train.conll")
