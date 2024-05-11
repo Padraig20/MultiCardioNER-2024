@@ -11,11 +11,16 @@ parser.add_argument('-d', '--dataset', type=str, default="es",
                     help='Choose the dataset you want to evaluate the model on. Choose from: es, it, en')
 parser.add_argument('-t', '--type', type=str, default="ENFERMEDAD",
                     help='Choose the entity type. Choose from: ENFERMEDAD, FARMACO.')
+parser.add_argument('-sp', '--special_model', type=str, default=None,
+                    help='Choose whether you used a special model, i.e. special tokenization and labels. Choose from: lcampillos/roberta-es-clinical-trials-ner')
 
 args = parser.parse_args()
 
 if args.dataset not in ['es', 'it', 'en']:
     raise ValueError("Dataset must be either es, it or en.")
+
+if args.special_model and args.special_model not in ['lcampillos/roberta-es-clinical-trials-ner']:
+    raise ValueError("Special model must be either lcampillos/roberta-es-clinical-trials-ner.")
 
 folder_name = f"../datasets/test+background/{args.dataset}/"
 output_file = args.output
@@ -44,6 +49,58 @@ ids_to_label = {
     1:f'I-{args.type}',
     2:'O'
 }
+
+if args.special_model:
+    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
+    
+        if args.type == 'ENFERMEDAD':
+            label_to_ids = {
+                'B-ANAT': 0,
+                'B-CHEM': 2,
+                'B-ENFERMEDAD': 4, #DISO
+                'B-PROC': 6,
+                'I-ANAT': 1,
+                'I-CHEM': 3,
+                'I-ENFERMEDAD': 5, #DISO
+                'I-PROC': 7,
+                'O': 8
+            }
+
+            ids_to_label = {
+                0:'O',
+                1:'O',
+                2:'O',
+                3:'O',
+                4:'B-ENFERMEDAD', #DISO
+                5:'I-ENFERMEDAD', #DISO
+                6:'O',
+                7:'O',
+                8:'O'
+            }
+        else:
+            label_to_ids = {
+                'B-ANAT': 0,
+                'B-FARMACO': 2, #CHEM
+                'B-DISO': 4,
+                'B-PROC': 6,
+                'I-ANAT': 1,
+                'I-FARMACO': 3, #CHEM
+                'I-DISO': 5,
+                'I-PROC': 7,
+                'O': 8
+            }
+
+            ids_to_label = {
+                0:'O',
+                1:'O',
+                2:'B-FARMACO', #CHEM
+                3:'I-FARMACO', #CHEM
+                4:'O',
+                5:'O',
+                6:'O',
+                7:'O',
+                8:'O'
+            }
 
 tokenizer = AutoTokenizer.from_pretrained(f"tok_{args.input}")
 model = AutoModelForTokenClassification.from_pretrained(f"model_{args.input}")
