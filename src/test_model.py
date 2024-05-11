@@ -11,6 +11,8 @@ parser.add_argument('-d', '--dataset', type=str, default="es",
                     help='Choose the dataset you want to evaluate the model on. Choose from: es, it, en')
 parser.add_argument('-t', '--type', type=str, default="ENFERMEDAD",
                     help='Choose the entity type. Choose from: ENFERMEDAD, FARMACO.')
+parser.add_argument('-ckp', '--checkpoint', type=str, default=None,
+                    help='Choose the checkpoint output you want to evaluate the model on. Must be a .csv file. Useful if scrpit terminated during evaluation.')
 parser.add_argument('-sp', '--special_model', type=str, default=None,
                     help='Choose whether you used a special model, i.e. special tokenization and labels. Choose from: lcampillos/roberta-es-clinical-trials-ner')
 
@@ -28,6 +30,7 @@ output_file = args.output
 import os
 import csv
 import spacy
+import pandas as pd
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
 
@@ -144,9 +147,21 @@ with open(output_file, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file, delimiter='\t')
     writer.writerow(['filename', 'label', 'start_span', 'end_span', 'text'])
 
+def load_unique_filenames(tsv_path):
+    df = pd.read_csv(tsv_path, sep='\t', usecols=[0], header=None)
+    unique_filenames = df[0].unique().tolist()
+    return unique_filenames
+
+if args.checkpoint:
+    filenames = load_unique_filenames(args.checkpoint)
+
 for file_name in tqdm(os.listdir(folder_name)):
     if file_name.endswith(".txt"):
         filename = file_name[:-4]
+        if args.checkpoint:
+            if filename in filenames:
+                print(f"Skipping {filename} as it is already in the checkpoint.")
+                continue
         with open(os.path.join(folder_name, file_name), 'r') as file:
             content = file.read().replace('\n', ' ')
         extracted_entities = extract_entities_from_text(content)
