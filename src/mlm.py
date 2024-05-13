@@ -17,8 +17,13 @@ parser.add_argument('-mlm', '--mlm_probability', type=float, default=0.15,
                     help='Choose the probability of masking tokens during training.')
 parser.add_argument('-b', '--batch_size', type=int, default=4,
                     help='Choose the batch size of the model.')
+parser.add_argument('-lang', '--language', type=str, default="es",
+                    help='Choose the dataset you want to train the model on. Choose from: es, it, en')
 
 args = parser.parse_args()
+
+if args.language not in ['es', 'it', 'en']:
+    raise ValueError("Language must be either es, it or en.")
 
 from transformers import DataCollatorForLanguageModeling, Trainer, TrainingArguments
 import torch
@@ -30,7 +35,7 @@ from utils.models import BertMLM, get_tokenizer
 model = BertMLM()
 tokenizer = get_tokenizer()
 
-with open("../datasets/admission_notes/es", "r") as f:
+with open(f"../datasets/admission_notes/{args.language}", "r") as f:
     texts = f.readlines()
 
 encodings = tokenizer(texts,
