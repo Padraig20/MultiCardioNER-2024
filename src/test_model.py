@@ -53,8 +53,8 @@ ids_to_label = {
     2:'O'
 }
 
-if args.special_model:
-    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
+if args.special_model or True:
+    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner" or True:
     
         if args.type == 'ENFERMEDAD':
             label_to_ids = {
@@ -105,8 +105,8 @@ if args.special_model:
                 8:'O'
             }
 
-tokenizer = AutoTokenizer.from_pretrained(f"tok_{args.input}")
-model = AutoModelForTokenClassification.from_pretrained(f"model_{args.input}")
+tokenizer = AutoTokenizer.from_pretrained(f"lcampillos/roberta-es-clinical-trials-ner")
+model = AutoModelForTokenClassification.from_pretrained(f"lcampillos/roberta-es-clinical-trials-ner")
 
 model.config.id2label = ids_to_label
 model.config.label2id = label_to_ids
@@ -127,11 +127,41 @@ def extract_entities_from_text(text):
         for entity in sentence_entities:
             entity_text = entity['word']
             entity_type = entity['entity_group']
-            start = entity['start'] + start_offset
+            start = entity['start'] + 1 + start_offset # add 1 (for some reason? only if roberta)
+            if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
+                start -= 1
             end = entity['end'] + start_offset
             
             entities.append((entity_text, entity_type, start, end))
 
+    # roberta based model requires more reconstruction
+    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
+        reconstructed_entities = []
+        for entity in entities:
+            entity_text = entity[0]
+            entity_type = entity[1]
+            start = entity[2]
+            end = entity[3]
+        
+            if entity_text.startswith(' '):
+                entity_text = entity_text[1:]
+            else:
+                if reconstructed_entities:
+                    prev_entity = reconstructed_entities[-1]
+                    prev_entity_text = prev_entity[0]
+                    prev_entity_type = prev_entity[1]
+                    prev_start = prev_entity[2]
+                    prev_end = prev_entity[3]
+                
+                    if prev_end == start:
+                        reconstructed_text = prev_entity_text + entity_text
+                        reconstructed_entities[-1] = (reconstructed_text, prev_entity_type, prev_start, end)
+                        continue
+        
+            reconstructed_entities.append((entity_text, entity_type, start, end))
+
+        entities = reconstructed_entities
+    
     return entities
 
 def write_entities_to_tsv(filename, text, entities):
@@ -139,9 +169,13 @@ def write_entities_to_tsv(filename, text, entities):
         writer = csv.writer(file, delimiter='\t')
         
         for text, entity_type, start, end in entities:
-            if text.strip() == '':
-                continue
-            writer.writerow([filename, entity_type, start, end, text])
+            try:
+                if text.strip() == '':
+                    continue
+                writer.writerow([filename, entity_type, start, end, text])
+            except Exception as e:
+                print(f"Error writing entity to TSV: {e}")
+                print(filename, entity_type, start, end, text)
 
 with open(output_file, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file, delimiter='\t')
@@ -162,7 +196,7 @@ for file_name in tqdm(os.listdir(folder_name)):
             if filename in filenames:
                 print(f"Skipping {filename} as it is already in the checkpoint.")
                 continue
-        with open(os.path.join(folder_name, file_name), 'r') as file:
+        with open(os.path.join(folder_name, file_name), 'r', encoding='utf-8') as file:
             content = file.read().replace('\n', ' ')
         extracted_entities = extract_entities_from_text(content)
         write_entities_to_tsv(filename, content, extracted_entities)
