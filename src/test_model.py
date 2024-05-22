@@ -14,15 +14,17 @@ parser.add_argument('-t', '--type', type=str, default="ENFERMEDAD",
 parser.add_argument('-ckp', '--checkpoint', type=str, default=None,
                     help='Choose the checkpoint output you want to evaluate the model on. Must be a .csv file. Useful if scrpit terminated during evaluation.')
 parser.add_argument('-sp', '--special_model', type=str, default=None,
-                    help='Choose whether you used a special model, i.e. special tokenization and labels. Choose from: lcampillos/roberta-es-clinical-trials-ner')
+                    help='Choose whether you used a special model, i.e. special tokenization and labels. Choose from: lcampillos/roberta-es-clinical-trials-ner, biobit, biobert')
+parser.add_argument('-test', '--test_set', type=bool, default=False,
+                    help='Choose whether you want to evaluate the model on the test set. If False, the model will be evaluated on both the background set and the test set.')
 
 args = parser.parse_args()
 
 if args.dataset not in ['es', 'it', 'en']:
     raise ValueError("Dataset must be either es, it or en.")
 
-if args.special_model and args.special_model not in ['lcampillos/roberta-es-clinical-trials-ner']:
-    raise ValueError("Special model must be either lcampillos/roberta-es-clinical-trials-ner.")
+if args.special_model and args.special_model not in ['lcampillos/roberta-es-clinical-trials-ner', 'biobit', 'biobert']:
+    raise ValueError("Special model must be either lcampillos/roberta-es-clinical-trials-ner, biobert or biobit.")
 
 folder_name = f"../datasets/test+background/{args.dataset}/"
 output_file = args.output
@@ -128,7 +130,7 @@ def extract_entities_from_text(text):
             entity_text = entity['word']
             entity_type = entity['entity_group']
             start = entity['start'] + 1 + start_offset # add 1 (for some reason? only if roberta)
-            if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
+            if args.special_model == "lcampillos/roberta-es-clinical-trials-ner" or args.special_model == 'biobit' or args.special_model == 'biobert':
                 start -= 1
             end = entity['end'] + start_offset
             
@@ -162,6 +164,20 @@ def extract_entities_from_text(text):
 
         entities = reconstructed_entities
     
+    # biobit leaves subwords for some reason
+    elif args.special_model == "biobit" or args.special_model == "biobert":
+        reconstructed_entities = []
+        for entity in entities:
+            entity_text = entity[0]
+            entity_type = entity[1]
+            start = entity[2]
+            end = entity[3]
+                
+            if not entity_text.startswith('##'):
+                reconstructed_entities.append((entity_text, entity_type, start, end))
+            
+        entities = reconstructed_entities
+    
     return entities
 
 def write_entities_to_tsv(filename, text, entities):
@@ -186,12 +202,23 @@ def load_unique_filenames(tsv_path):
     unique_filenames = df[0].unique().tolist()
     return unique_filenames
 
+def load_testset_filenames(txt_path):
+    with open(txt_path, 'r', encoding='utf-8') as file:
+        filenames = file.read().splitlines()
+    return filenames
+
 if args.checkpoint:
     filenames = load_unique_filenames(args.checkpoint)
+    
+if args.test_set:
+    filenames = load_testset_filenames(f"../datasets/multicardioner_test_fnames.txt")
 
 for file_name in tqdm(os.listdir(folder_name)):
     if file_name.endswith(".txt"):
         filename = file_name[:-4]
+        if args.test_set:
+            if filename not in filenames:
+                continue
         if args.checkpoint:
             if filename in filenames:
                 print(f"Skipping {filename} as it is already in the checkpoint.")
