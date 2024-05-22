@@ -53,8 +53,8 @@ ids_to_label = {
     2:'O'
 }
 
-if args.special_model or True:
-    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner" or True:
+if args.special_model:
+    if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
     
         if args.type == 'ENFERMEDAD':
             label_to_ids = {
@@ -105,8 +105,8 @@ if args.special_model or True:
                 8:'O'
             }
 
-tokenizer = AutoTokenizer.from_pretrained(f"lcampillos/roberta-es-clinical-trials-ner")
-model = AutoModelForTokenClassification.from_pretrained(f"lcampillos/roberta-es-clinical-trials-ner")
+tokenizer = AutoTokenizer.from_pretrained(f"tok_{args.input}")
+model = AutoModelForTokenClassification.from_pretrained(f"model_{args.input}")
 
 model.config.id2label = ids_to_label
 model.config.label2id = label_to_ids
