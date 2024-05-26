@@ -23,6 +23,8 @@ parser.add_argument('-ctn', '--clinical_trials_ner', type=str, default=None,
                     help='Choose this option if you want to finetune your model onto the clinical trials dataset. Use FARMACO or ENFERMEDAD.')
 parser.add_argument('-lang', '--language', type=str, default=None,
                     help='Choose the language (if the model is to be trained onto FARMACO). Use es, en, it or all.')
+parser.add_argument('-ss', '--single_sentences', type=bool, default=False,
+                    help='Choose whether to train and evaluate the model by only using single sentences. Default is False.')
 
 args = parser.parse_args()
 
@@ -47,7 +49,7 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification, Trainin
 import transformers
 import numpy as np
 from utils.metric_tracking import MetricsTracking
-from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDataset
+from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDataset, SingleSentenceDataset
 from datasets import concatenate_datasets
 
 
@@ -130,12 +132,20 @@ tokenizer = AutoTokenizer.from_pretrained(tokenizer_chkp)
 
 assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
 
-if args.stride:
-    dataloader_train = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
+if args.single_sentences:
+    if args.language == 'all':
+        language = 'es'
+    else:
+        language = args.language
+    dataloader_train = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, language)
+    dataloader_test = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, language)
 else:
-    dataloader_train = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
+    if args.stride:
+        dataloader_train = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
+    else:
+        dataloader_train = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
     
-dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
+    dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
 if not args.clinical_trials_ner:
     train_path = "../datasets/track1_converted/train/all_train.conll"
