@@ -4,8 +4,10 @@ import os
 import warnings
 warnings.filterwarnings("ignore")
 
-def extract_text_from_filename(filename, lang):
-    with open(os.path.join(f"../datasets/test+background/{lang}", filename + ".txt"), 'r', encoding='utf-8') as file:
+def extract_text_from_filename(filename, foldername):
+    #with open(os.path.join(f"../datasets/test+background/{lang}", filename + ".txt"), 'r', encoding='utf-8') as file:
+    #    content = file.read().replace('\n', ' ')
+    with open(os.path.join(foldername, filename + ".txt"), 'r', encoding='utf-8') as file:
         content = file.read().replace('\n', ' ')
     return content
 
@@ -45,13 +47,13 @@ def align_text(row, text):
     print(f"{row['extracted_text']} -- EXTRACTED\n")
     return row['start_span'], row['end_span']
 
-def main(input_file, language):
+def main(input_file, foldername):
     data = pd.read_csv(input_file, sep='\t', encoding='utf-8')
     
     filename_texts = {}
     
     for filename in data['filename'].unique():
-        file_text = extract_text_from_filename(filename, language)
+        file_text = extract_text_from_filename(filename, foldername)
         filename_texts[filename] = file_text
     
     data['alignment'] = data.apply(lambda row: check_alignment(row, filename_texts[row['filename']]), axis=1)
@@ -92,6 +94,23 @@ if __name__ == "__main__":
     parser.add_argument('input_file', type=str, help='Path to the input TSV file')
     parser.add_argument('-lang', '--language', type=str, default="es",
                     help='Choose the language you want to evaluate the model on. Choose from: es, it, en')
+    parser.add_argument('-t', '--type', type=str, default="ENFERMEDAD",
+                        help='Choose the entity type. Choose from: ENFERMEDAD, FARMACO.')
+    parser.add_argument('-d', '--dev', type=bool, default=False,
+                        help='Whether to use the development set or not. Default is False.')
+    
+    args = parser.parse_args()
+    
+    if args.language not in ['es', 'it', 'en']:
+        raise ValueError("Language must be either es, it or en.")
+    
+    if not args.dev:
+        folder_name = f"../datasets/test+background/{args.language}"
+    else:
+        if args.type == 'ENFERMEDAD':
+            folder_name = "../datasets/track1/cardioccc_dev/brat/"
+        else:
+            folder_name = f"../datasets/track2/cardioccc_dev/{args.language}/brat/"
     
     args = parser.parse_args()
 
@@ -100,4 +119,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    main(args.input_file, args.language)
+    main(args.input_file, folder_name)
