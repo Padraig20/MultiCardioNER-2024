@@ -200,7 +200,7 @@ class SingleSentenceDataset():
         self.ids_to_label = ids_to_label
         self.label_to_ids = label_to_ids
         self.language = language
-        self.nlp = spacy.load(f"{self.language}_core_web_sm")
+        self.nlp = spacy.load(f"{self.language}_core_{'web' if self.language == 'en' else 'news'}_sm")
         
     def tokenize_and_preserve_labels(self, sentence, text_labels):
         tokenized_sentence = []
