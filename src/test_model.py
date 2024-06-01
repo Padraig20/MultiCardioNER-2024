@@ -17,6 +17,10 @@ parser.add_argument('-sp', '--special_model', type=str, default=None,
                     help='Choose whether you used a special model, i.e. special tokenization and labels. Choose from: lcampillos/roberta-es-clinical-trials-ner, biobit, biobert')
 parser.add_argument('-test', '--test_set', type=bool, default=False,
                     help='Choose whether you want to evaluate the model on the test set. If False, the model will be evaluated on both the background set and the test set.')
+parser.add_argument('-dev', '--dev_set', type=bool, default=False,
+                    help='Choose whether you want to evaluate the model on the dev set. If False, the model will be evaluated on teh test set.')
+parser.add_argument('-strat', '--strategy', type=str, default='cutoff',
+                    help='Choose the strategy you want to use to extract entities. Choose from: cutoff, sentences, chunks. Default is cutoff.')
 
 args = parser.parse_args()
 
@@ -26,8 +30,23 @@ if args.dataset not in ['es', 'it', 'en']:
 if args.special_model and args.special_model not in ['lcampillos/roberta-es-clinical-trials-ner', 'biobit', 'biobert']:
     raise ValueError("Special model must be either lcampillos/roberta-es-clinical-trials-ner, biobert or biobit.")
 
-folder_name = f"../datasets/test+background/{args.dataset}/"
+if args.test_set and args.dev_set:
+    raise ValueError("Either test_set or dev_set must be set to True.")
+
+if args.strategy not in ['cutoff', 'sentences', 'chunks']:
+    raise ValueError("Strategy must be either cutoff, sentences or chunks.")
+
+if args.dev_set:
+    if args.type == 'ENFERMEDAD':
+        folder_name = "../datasets/track1/cardioccc_dev/brat/"
+    else:
+        folder_name = f"../datasets/track2/cardioccc_dev/{args.dataset}/brat/"
+else:
+    folder_name = f"../datasets/test+background/{args.dataset}/"
+
 output_file = args.output
+
+print(f"Extracting entities from {folder_name} and saving to {output_file}.")
 
 import os
 import csv
@@ -110,12 +129,14 @@ if args.special_model:
 tokenizer = AutoTokenizer.from_pretrained(f"tok_{args.input}")
 model = AutoModelForTokenClassification.from_pretrained(f"model_{args.input}")
 
+max_length = tokenizer.model_max_length
+
 model.config.id2label = ids_to_label
 model.config.label2id = label_to_ids
 
 ner_model = pipeline("ner", model=model, tokenizer=tokenizer, aggregation_strategy="simple")
 
-def extract_entities_from_text(text):
+def extract_entities_sentences(text):
     doc = nlp(text)
     sentences = [sent.text for sent in doc.sents]
     sentence_offsets = [sent.start_char for sent in doc.sents]
@@ -135,6 +156,76 @@ def extract_entities_from_text(text):
             end = entity['end'] + start_offset
             
             entities.append((entity_text, entity_type, start, end))
+
+    return entities
+
+def extract_entities_cutoff(text):
+    entities_batch = ner_model([text], batch_size=1)
+
+    entities = []
+    for entity in entities_batch[0]:
+        entity_text = entity['word']
+        entity_type = entity['entity_group']
+        start = entity['start'] + 1
+        if args.special_model in ["lcampillos/roberta-es-clinical-trials-ner", "biobit", "biobert"]:
+            start -= 1
+        end = entity['end']
+    
+        entities.append((entity_text, entity_type, start, end))
+    
+    return entities
+
+def chunk_text(text):
+    words = text.split()
+    chunks = []
+    current_chunk = []
+    current_length = 0
+
+    for word in words:
+        word_length = len(tokenizer.tokenize(word))
+        if current_length + word_length > max_length:
+            chunks.append(' '.join(current_chunk))
+            current_chunk = [word]
+            current_length = word_length
+        else:
+            current_chunk.append(word)
+            current_length += word_length
+
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+
+    return chunks
+
+def extract_entities_chunks(text):
+    chunks = chunk_text(text)
+    entities = []
+    current_offset = 0
+
+    for chunk in chunks:
+        chunk_entities = ner_model([chunk], batch_size=1)[0]
+        for entity in chunk_entities:
+            entity_text = entity['word']
+            entity_type = entity['entity_group']
+            start = entity['start'] + current_offset
+            end = entity['end'] + current_offset
+
+            if args.special_model in ["lcampillos/roberta-es-clinical-trials-ner", "biobit", "biobert"]:
+                start -= 1
+
+            entities.append((entity_text, entity_type, start, end))
+        
+        current_offset += len(chunk)
+
+    return entities
+
+def extract_entities_from_text(text):
+    
+    if args.strategy == 'cutoff':
+        entities = extract_entities_cutoff(text)
+    elif args.strategy == 'sentences':
+        entities = extract_entities_sentences(text)
+    elif args.strategy == 'chunks':
+        entities = extract_entities_chunks(text)
 
     # roberta based model requires more reconstruction
     if args.special_model == "lcampillos/roberta-es-clinical-trials-ner":
@@ -213,19 +304,23 @@ if args.checkpoint:
 if args.test_set:
     filenames = load_testset_filenames(f"../datasets/multicardioner_test_fnames.txt")
 
-for file_name in tqdm(os.listdir(folder_name)):
-    if file_name.endswith(".txt"):
-        filename = file_name[:-4]
-        if args.test_set:
-            if filename not in filenames:
-                continue
-        if args.checkpoint:
-            if filename in filenames:
-                print(f"Skipping {filename} as it is already in the checkpoint.")
-                continue
-        with open(os.path.join(folder_name, file_name), 'r', encoding='utf-8') as file:
+if not args.test_set:
+    for file_name in tqdm(os.listdir(folder_name)):
+        if file_name.endswith(".txt"):
+            filename = file_name[:-4]
+            if args.checkpoint:
+                if filename in filenames:
+                    print(f"Skipping {filename} as it is already in the checkpoint.")
+                    continue
+            with open(os.path.join(folder_name, file_name), 'r', encoding='utf-8') as file:
+                content = file.read().replace('\n', ' ')
+            extracted_entities = extract_entities_from_text(content)
+            write_entities_to_tsv(filename, content, extracted_entities)
+else:
+    for file_name in tqdm(filenames):
+        with open(os.path.join(folder_name, file_name + ".txt"), 'r', encoding='utf-8') as file:
             content = file.read().replace('\n', ' ')
         extracted_entities = extract_entities_from_text(content)
-        write_entities_to_tsv(filename, content, extracted_entities)
+        write_entities_to_tsv(file_name, content, extracted_entities)
 
 print(f"Entities extracted from {len(os.listdir(folder_name))} files in {folder_name} and saved to {output_file}.")
