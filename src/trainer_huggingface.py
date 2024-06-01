@@ -25,6 +25,8 @@ parser.add_argument('-lang', '--language', type=str, default=None,
                     help='Choose the language (if the model is to be trained onto FARMACO). Use es, en, it or all.')
 parser.add_argument('-ss', '--single_sentences', type=bool, default=False,
                     help='Choose whether to train and evaluate the model by only using single sentences. Default is False.')
+parser.add_argument('-strat', '--evaluation_strategy', type=str, default="cutoff",
+                    help='Choose the evaluation strategy. Choose from: cutoff, sliding_window, sentences. Default is cutoff.')
 
 args = parser.parse_args()
 
@@ -133,18 +135,18 @@ tokenizer = AutoTokenizer.from_pretrained(tokenizer_chkp)
 assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
 
 if args.single_sentences:
-    if args.language == 'all':
-        language = 'es'
-    else:
-        language = args.language
-    dataloader_train = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, language)
-    dataloader_test = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, language)
+    dataloader_train = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids,  'es' if args.language == 'all' else args.language)
 else:
     if args.stride:
         dataloader_train = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride)
     else:
         dataloader_train = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
     
+if args.evaluation_strategy == 'sliding_window':
+    dataloader_test = SlidingWindowDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, args.stride if args.stride else args.input_length)
+elif args.evaluation_strategy == 'sentences':
+    dataloader_test = SingleSentenceDataset(max_tokens, tokenizer, ids_to_label, label_to_ids, 'es' if args.language == 'all' else args.language)
+else:
     dataloader_test = CutoffLengthDataset(max_tokens, tokenizer, ids_to_label, label_to_ids)
 
 if not args.clinical_trials_ner:
@@ -157,7 +159,15 @@ if not args.clinical_trials_ner:
         else:
             train_path = f"../datasets/track2_converted/train/{args.language}/all_train.conll"
             dev_path = f"../datasets/track2_converted/dev/{args.language}/all_dev.conll"
-            print(f"Training on {args.language} data for {entity_type}.")
+    if args.stride:
+        strategy = "sliding window"
+    elif args.single_sentences:
+        strategy = "single sentences"
+    else:
+        strategy = "cutoff length"
+    
+    print(f"Training via {strategy} on {args.language} data for {entity_type}. Evaluating via {args.evaluation_strategy}.")
+    
     dataset_train = dataloader_train.get_dataset(train_path)
     dataset_test = dataloader_test.get_dataset(dev_path)
 
