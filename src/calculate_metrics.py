@@ -63,13 +63,18 @@ def save_results(results_dict, output_file):
             
             f.write("\n")
 
-def main(gold_file, pred_file, output_file):
+def main(gold_file, pred_file, output_file, dataset):
     gold_df = load_tsv(gold_file)
     pred_df = load_tsv(pred_file)
     
     gold_df = gold_df[['filename', 'start_span', 'end_span', 'text']]
     pred_df = pred_df[['filename', 'start_span', 'end_span', 'text']]
     
+    if dataset == 'test':
+        mapping_df = pd.read_csv('../datasets/multicardioner_test+background_fname-mapping.tsv', sep='\t', header=None)
+        gold_df['filename'] = gold_df['filename'].map(lambda x: next((j[:len(j)-4] for i, j in mapping_df.values if i[:len(i)-4] == x), x))
+        print(gold_df.head())
+        
     precision, recall, f1, tp_set, fp_set, fn_set = calculate_metrics(gold_df, pred_df)
     
     results_dict = group_results_by_filename(tp_set, fp_set, fn_set)
@@ -88,18 +93,23 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--type', type=str, default="ENFERMEDAD",
                         help='Choose the entity type. Choose from: ENFERMEDAD, FARMACO.')
     parser.add_argument('-o', '--output_file', type=str, default='results.txt',
-                        help='Path to the output file to save results')
+                        help='Path to the output file to save results.')
+    parser.add_argument('-d', '--dataset', type=str, default='test',
+                        help='Calculate metrics based on dev or test set. Choose from: dev, test')
     
     args = parser.parse_args()
     
     if args.language not in ['es', 'it', 'en']:
         raise ValueError("Language must be either es, it or en.")
     
+    if args.dataset not in ['test', 'dev']:
+        raise ValueError("Dataset must be either test or dev.")
+    
     if args.type == 'ENFERMEDAD':
-        gold_file = "../datasets/track1/cardioccc_dev/tsv/multicardioner_track1_cardioccc_dev.tsv"
+        gold_file = f"../datasets/track1/cardioccc_{args.dataset}/tsv/multicardioner_track1_cardioccc_{args.dataset}.tsv"
     else:
-        gold_file = f"../datasets/track2/cardioccc_dev/{args.language}/tsv/multicardioner_track2_cardioccc_dev_{args.language}.tsv"
+        gold_file = f"../datasets/track2/cardioccc_{args.dataset}/{args.language}/tsv/multicardioner_track2_cardioccc_{args.dataset}_{args.language}.tsv"
     
     print(f"Checking alignment between golden standard {gold_file} and predictions {args.pred_file}...")
     
-    main(gold_file, args.pred_file, args.output_file)
+    main(gold_file, args.pred_file, args.output_file, args.dataset)
