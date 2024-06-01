@@ -130,9 +130,9 @@ class CONLL2JSON:
 
 converter = CONLL2JSON()
 
-tag = 'en'
+tag = 'it'
 
-in_file = f"../track2_converted/train/{tag}/all_train.conll"
-out_file = f"../track2_converted/train/{tag}/all_train.json"
+in_file = f"../track2_converted/test/{tag}/all_test.conll"
+out_file = f"../track2_converted/test/{tag}/all_test.json"
 
 converter.parse(in_file, out_file, '\t', 'json')
