@@ -19,7 +19,7 @@ def describe_cvs(path):
     shortest_sentence = sent_len.min()
     median_sentence = sent_len.median()
     mean_sentece = sent_len.mean()
-    print("Sentence Length Statistics:\n")
+    print("Patient Note Length Statistics:\n")
     print(f"min: {shortest_sentence}")
     print(f"max: {longest_sentence}")
     print(f"median: {median_sentence}")
@@ -27,8 +27,8 @@ def describe_cvs(path):
 
     plt.figure(figsize=(10, 6))
     sent_len.plot(kind='hist', bins=20, color='skyblue', edgecolor='black')
-    plt.title(f'Histogram of Sentence Lengths ({ent_type}, {lang}, {dataset})')
-    plt.xlabel('Length of sentence')
+    plt.title(f'Histogram of Patient Note Lengths ({ent_type}, {lang}, {dataset})')
+    plt.xlabel('Length of Patient Note')
     plt.ylabel('Frequency')
     plt.grid(axis='y', alpha=0.75)
     plt.show()
@@ -40,7 +40,7 @@ def describe_cvs(path):
     plt.figure(figsize=(15, 6))
     sns.boxplot(sent_len, color=palette[3], saturation=0.75, orient="h")
 
-    plt.title(f'Boxplot of Sentence Lengths ({ent_type}, {lang}, {dataset})', fontsize=16)
+    plt.title(f'Boxplot of Patient Note Lengths ({ent_type}, {lang}, {dataset})', fontsize=16)
     plt.xlabel('Sentence Length', fontsize=14)
     plt.ylabel('Density', fontsize=14)
     plt.xticks(fontsize=12)
