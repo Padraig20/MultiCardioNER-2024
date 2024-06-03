@@ -44,7 +44,7 @@ if args.clinical_trials_ner and args.clinical_trials_ner not in ['FARMACO', 'ENF
 if args.clinical_trials_ner:
     entity_type = args.clinical_trials_ner
 
-if args.language not in ['es', 'en', 'it', 'all']:
+if args.language and args.language not in ['es', 'en', 'it', 'all']:
     raise ValueError("Language must be either es, en, it or all.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
@@ -166,7 +166,7 @@ if not args.clinical_trials_ner:
     else:
         strategy = "cutoff length"
     
-    print(f"Training via {strategy} on {args.language} data for {entity_type}. Evaluating via {args.evaluation_strategy}.")
+    print(f"Training via {strategy} on {args.language if args.language else 'es'} data for {entity_type}. Evaluating via {args.evaluation_strategy}.")
     
     dataset_train = dataloader_train.get_dataset(train_path)
     dataset_test = dataloader_test.get_dataset(dev_path)
