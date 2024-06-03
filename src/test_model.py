@@ -19,8 +19,8 @@ parser.add_argument('-test', '--test_set', type=bool, default=False,
                     help='Choose whether you want to evaluate the model on the test set. If False, the model will be evaluated on both the background set and the test set.')
 parser.add_argument('-dev', '--dev_set', type=bool, default=False,
                     help='Choose whether you want to evaluate the model on the dev set. If False, the model will be evaluated on teh test set.')
-parser.add_argument('-strat', '--strategy', type=str, default='cutoff',
-                    help='Choose the strategy you want to use to extract entities. Choose from: cutoff, sentences, chunks. Default is cutoff.')
+parser.add_argument('-strat', '--strategy', type=str, default='sentences',
+                    help='Choose the strategy you want to use to extract entities. Choose from: cutoff, sentences, chunks. Default is sentences.')
 
 args = parser.parse_args()
 
