@@ -44,7 +44,10 @@ if args.clinical_trials_ner and args.clinical_trials_ner not in ['FARMACO', 'ENF
 if args.clinical_trials_ner:
     entity_type = args.clinical_trials_ner
 
-if args.language and args.language not in ['es', 'en', 'it', 'all']:
+if not args.language:
+    args.language = 'es'
+
+if args.language not in ['es', 'en', 'it', 'all']:
     raise ValueError("Language must be either es, en, it or all.")
 
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
