@@ -3,7 +3,7 @@ import os
 
 def read_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
-        return file.read().replace('\n', ' ')
+        return file.read()
 
 def parse_annotations(annotations_text):
     annotations = []
@@ -57,13 +57,14 @@ def write_to_csv(filename, text, token_tags):
         file.write(f"{text}|{token_tags}\n")
 
 def convert_brat_to_csv(text_file, ann_file, output_csv):
-    text = read_file(text_file)
+    text = read_file(text_file).replace('\n', ' ')
     annotations_text = read_file(ann_file)
     annotations = parse_annotations(annotations_text)
     char_tags = apply_annotations_to_tags(text, annotations)
     tokens, positions = tokenize_text(text)
     token_tags = assign_tags_to_tokens(tokens, positions, char_tags)
-    print(tokens)
+    print(annotations_text)
+    print(token_tags)
     #print(char_tags)
     #print(token_tags)
     write_to_csv(output_csv, text, token_tags)
@@ -77,13 +78,13 @@ def read_files_from_directory(directory):
             files.append(str(file_path)[:len(file_path)-4])
     return files
 
-directory = '../track2/cardioccc_test/it/brat/'
+directory = '../track1/cardioccc_test/brat/'
 files = read_files_from_directory(directory)
 unique_files = set(files)
 
 for file in files:
     text_file = file + ".txt"
     ann_file = file + ".ann"
-    output_csv = "../track2_converted/test/it/all_test.csv"
-    print(file)
+    output_csv = "./test/all_test.csv"
+    #print(file)
     convert_brat_to_csv(text_file, ann_file, output_csv)
