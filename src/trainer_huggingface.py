@@ -27,6 +27,8 @@ parser.add_argument('-ss', '--single_sentences', type=bool, default=False,
                     help='Choose whether to train and evaluate the model by only using single sentences. Default is False.')
 parser.add_argument('-strat', '--evaluation_strategy', type=str, default="cutoff",
                     help='Choose the evaluation strategy. Choose from: cutoff, sliding_window, sentences. Default is cutoff.')
+parser.add_argument('-metrics', '--metrics', type=str, default="conll",
+                    help='Choose the metrics to use. Choose from: conll, seqeval. Default is conll.')
 
 args = parser.parse_args()
 
@@ -34,6 +36,9 @@ if args.language:
     entity_type = 'FARMACO'
 else:
     entity_type = 'ENFERMEDAD'
+
+if args.metrics not in ['conll', 'seqeval']:
+    raise ValueError("Metrics must be either conll or seqeval.")
 
 if args.stride is not None and args.stride < 0:
     raise ValueError("Stride must be greater than zero.")
@@ -53,9 +58,9 @@ if args.language not in ['es', 'en', 'it', 'all']:
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 import transformers
 import numpy as np
-from utils.metric_tracking import MetricsTracking
 from utils.dataloader_huggingface import SlidingWindowDataset, CutoffLengthDataset, SingleSentenceDataset
 from datasets import concatenate_datasets
+from utils.metrics import MetricsForHuggingfaceTrainer
 
 
 model_checkpoint = "lcampillos/roberta-es-clinical-trials-ner"
@@ -169,7 +174,7 @@ if not args.clinical_trials_ner:
     else:
         strategy = "cutoff length"
     
-    print(f"Training via {strategy} on {args.language if args.language else 'es'} data for {entity_type}. Evaluating via {args.evaluation_strategy}.")
+    print(f"Training via {strategy} on {args.language if args.language else 'es'} data for {entity_type}. Evaluating via {args.evaluation_strategy} and metric {args.metrics}.")
     
     dataset_train = dataloader_train.get_dataset(train_path)
     dataset_test = dataloader_test.get_dataset(dev_path)
@@ -199,29 +204,8 @@ args_train = TrainingArguments(
 
 data_collator = DataCollatorForTokenClassification(tokenizer)
 
-def compute_metrics(p):
-    predictions, labels = p
-    predictions = np.argmax(predictions, axis=2)
+compute_metrics = MetricsForHuggingfaceTrainer(label_list, entity_type).get_metric(args.metrics)
 
-    # Remove ignored index (special tokens)
-    true_predictions = [
-        [label_list[p] for (p, l) in zip(prediction, label) if l != -100]
-        for prediction, label in zip(predictions, labels)
-    ]
-    true_labels = [
-        [label_list[l] for (p, l) in zip(prediction, label) if l != -100]
-        for prediction, label in zip(predictions, labels)
-    ]
-
-    flat_true_predictions = [p for sublist in true_predictions for p in sublist]
-
-    flat_true_labels = [l for sublist in true_labels for l in sublist]
-
-    tracker = MetricsTracking(entity_type, tensor_input=False)
-    tracker.update(flat_true_predictions, flat_true_labels)
-
-    return tracker.return_avg_metrics()
-    
 trainer = Trainer(
     model,
     args_train,
