@@ -132,7 +132,7 @@ converter = CONLL2JSON()
 
 tag = 'it'
 
-in_file = f"../track1_converted/test/all_test.conll"
-out_file = f"../track1_converted/test/all_test.json"
+in_file = f"../track2_converted/dev/it/all_dev.conll"
+out_file = f"../track2_converted/dev/it/all_dev.json"
 
 converter.parse(in_file, out_file, '\t', 'json')
