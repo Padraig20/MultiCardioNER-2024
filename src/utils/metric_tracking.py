@@ -546,8 +546,8 @@ class MetricsTracking():
 
         # recalculate precision and recall
         def calculate_metrics(metrics):
-            precision = metrics['correct'] / (metrics['correct'] + metrics['spurious']) if (metrics['correct'] + metrics['spurious']) else 0
-            recall = metrics['correct'] / (metrics['correct'] + metrics['missed']) if (metrics['correct'] + metrics['missed']) else 0
+            precision = metrics['correct'] / (metrics['correct'] + metrics['spurious'] + metrics['incorrect']) if (metrics['correct'] + metrics['spurious'] + metrics['incorrect']) else 0
+            recall = metrics['correct'] / (metrics['correct'] + metrics['missed'] + metrics['incorrect']) if (metrics['correct'] + metrics['missed'] + metrics['incorrect']) else 0
             f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) else 0
             return precision, recall, f1_score
 
