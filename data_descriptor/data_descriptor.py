@@ -41,7 +41,7 @@ def describe_cvs(path):
     sns.boxplot(sent_len, color=palette[3], saturation=0.75, orient="h")
 
     plt.title(f'Boxplot of Patient Note Lengths ({ent_type}, {lang}, {dataset})', fontsize=16)
-    plt.xlabel('Sentence Length', fontsize=14)
+    plt.xlabel('Number of Words', fontsize=14)
     plt.ylabel('Density', fontsize=14)
     plt.xticks(fontsize=12)
     plt.yticks([])
