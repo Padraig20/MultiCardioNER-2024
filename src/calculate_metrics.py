@@ -74,6 +74,11 @@ def main(gold_file, pred_file, output_file, dataset):
         mapping_df = pd.read_csv('../datasets/multicardioner_test+background_fname-mapping.tsv', sep='\t', header=None)
         gold_df['filename'] = gold_df['filename'].map(lambda x: next((j[:len(j)-4] for i, j in mapping_df.values if i[:len(i)-4] == x), x))
         print(gold_df.head())
+    
+        with open('../datasets/multicardioner_test_fnames.txt', 'r') as f:
+            test_fnames = [line.strip() for line in f]
+
+        pred_df = pred_df[pred_df['filename'].isin(test_fnames)]
         
     precision, recall, f1, tp_set, fp_set, fn_set = calculate_metrics(gold_df, pred_df)
     
